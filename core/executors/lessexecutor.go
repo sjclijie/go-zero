@@ -3,8 +3,8 @@ package executors
 import (
 	"time"
 
-	"github.com/tal-tech/go-zero/core/syncx"
-	"github.com/tal-tech/go-zero/core/timex"
+	"github.com/sjclijie/go-zero/core/syncx"
+	"github.com/sjclijie/go-zero/core/timex"
 )
 
 type LessExecutor struct {

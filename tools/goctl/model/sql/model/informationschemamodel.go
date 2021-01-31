@@ -1,6 +1,6 @@
 package model
 
-import "github.com/tal-tech/go-zero/core/stores/sqlx"
+import "github.com/sjclijie/go-zero/core/stores/sqlx"
 
 type (
 	InformationSchemaModel struct {

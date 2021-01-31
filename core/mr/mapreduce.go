@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/tal-tech/go-zero/core/errorx"
-	"github.com/tal-tech/go-zero/core/lang"
-	"github.com/tal-tech/go-zero/core/syncx"
-	"github.com/tal-tech/go-zero/core/threading"
+	"github.com/sjclijie/go-zero/core/errorx"
+	"github.com/sjclijie/go-zero/core/lang"
+	"github.com/sjclijie/go-zero/core/syncx"
+	"github.com/sjclijie/go-zero/core/threading"
 )
 
 const (

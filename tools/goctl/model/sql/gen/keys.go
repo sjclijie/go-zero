@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/parser"
-	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/sjclijie/go-zero/tools/goctl/model/sql/parser"
+	"github.com/sjclijie/go-zero/tools/goctl/util/stringx"
 )
 
 // tableName:user

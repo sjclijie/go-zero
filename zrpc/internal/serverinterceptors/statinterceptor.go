@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/stat"
-	"github.com/tal-tech/go-zero/core/timex"
+	"github.com/sjclijie/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/core/stat"
+	"github.com/sjclijie/go-zero/core/timex"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
 )

@@ -4,10 +4,10 @@
 
 English | [简体中文](readme.md)
 
-[![Go](https://github.com/tal-tech/go-zero/workflows/Go/badge.svg?branch=master)](https://github.com/tal-tech/go-zero/actions)
-[![codecov](https://codecov.io/gh/tal-tech/go-zero/branch/master/graph/badge.svg)](https://codecov.io/gh/tal-tech/go-zero)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tal-tech/go-zero)](https://goreportcard.com/report/github.com/tal-tech/go-zero)
-[![Release](https://img.shields.io/github/v/release/tal-tech/go-zero.svg?style=flat-square)](https://github.com/tal-tech/go-zero)
+[![Go](https://github.com/sjclijie/go-zero/workflows/Go/badge.svg?branch=master)](https://github.com/sjclijie/go-zero/actions)
+[![codecov](https://codecov.io/gh/sjclijie/go-zero/branch/master/graph/badge.svg)](https://codecov.io/gh/sjclijie/go-zero)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sjclijie/go-zero)](https://goreportcard.com/report/github.com/sjclijie/go-zero)
+[![Release](https://img.shields.io/github/v/release/sjclijie/go-zero.svg?style=flat-square)](https://github.com/sjclijie/go-zero)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 0. what is go-zero
@@ -88,23 +88,23 @@ As below, go-zero protects the system with couple layers and mechanisms:
 Run the following command under your project:
 
 ```shell
-go get -u github.com/tal-tech/go-zero
+go get -u github.com/sjclijie/go-zero
 ```
 
 ## 6. Quick Start
 
 0. full examples can be checked out from below:
 
-     [Rapid development of microservice systems](https://github.com/tal-tech/zero-doc/blob/main/doc/shorturl-en.md)
+     [Rapid development of microservice systems](https://github.com/sjclijie/zero-doc/blob/main/doc/shorturl-en.md)
 
-     [Rapid development of microservice systems - multiple RPCs](https://github.com/tal-tech/zero-doc/blob/main/doc/bookstore-en.md)
+     [Rapid development of microservice systems - multiple RPCs](https://github.com/sjclijie/zero-doc/blob/main/doc/bookstore-en.md)
 
 1. install goctl
 
    `goctl`can be read as `go control`. `goctl` means not to be controlled by code, instead, we control it. The inside `go` is not `golang`. At the very beginning, I was expecting it to help us improve the productivity, and make our lives easier.
 
    ```shell
-   GO111MODULE=on go get -u github.com/tal-tech/go-zero/tools/goctl
+   GO111MODULE=on go get -u github.com/sjclijie/go-zero/tools/goctl
    ```
 
    make sure goctl is executable.
@@ -206,8 +206,8 @@ go get -u github.com/tal-tech/go-zero
 
 ## 8. Documents (adding)
 
-* [Rapid development of microservice systems](https://github.com/tal-tech/zero-doc/blob/main/doc/shorturl-en.md)
-* [Rapid development of microservice systems - multiple RPCs](https://github.com/tal-tech/zero-doc/blob/main/doc/bookstore-en.md)
+* [Rapid development of microservice systems](https://github.com/sjclijie/zero-doc/blob/main/doc/shorturl-en.md)
+* [Rapid development of microservice systems - multiple RPCs](https://github.com/sjclijie/zero-doc/blob/main/doc/bookstore-en.md)
 
 ## 9. Chat group
 

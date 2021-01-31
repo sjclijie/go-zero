@@ -3,10 +3,10 @@ package gen
 import (
 	"strings"
 
-	"github.com/tal-tech/go-zero/core/collection"
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/template"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/sjclijie/go-zero/core/collection"
+	"github.com/sjclijie/go-zero/tools/goctl/model/sql/template"
+	"github.com/sjclijie/go-zero/tools/goctl/util"
+	"github.com/sjclijie/go-zero/tools/goctl/util/stringx"
 )
 
 func genInsert(table Table, withCache bool) (string, string, error) {

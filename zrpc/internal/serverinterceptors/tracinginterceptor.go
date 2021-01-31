@@ -3,7 +3,7 @@ package serverinterceptors
 import (
 	"context"
 
-	"github.com/tal-tech/go-zero/core/trace"
+	"github.com/sjclijie/go-zero/core/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

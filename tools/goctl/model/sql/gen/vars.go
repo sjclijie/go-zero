@@ -3,9 +3,9 @@ package gen
 import (
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/template"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/sjclijie/go-zero/tools/goctl/model/sql/template"
+	"github.com/sjclijie/go-zero/tools/goctl/util"
+	"github.com/sjclijie/go-zero/tools/goctl/util/stringx"
 )
 
 func genVars(table Table, withCache bool) (string, error) {

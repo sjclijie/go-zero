@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/model"
+	"github.com/sjclijie/go-zero/tools/goctl/model/sql/model"
 )
 
 func TestParsePlainText(t *testing.T) {

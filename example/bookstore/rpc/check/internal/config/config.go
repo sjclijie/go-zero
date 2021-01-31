@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/tal-tech/go-zero/core/stores/cache"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/sjclijie/go-zero/core/stores/cache"
+	"github.com/sjclijie/go-zero/zrpc"
 )
 
 type Config struct {

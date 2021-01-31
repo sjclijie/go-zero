@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/core/logx"
 )
 
 func foo() {

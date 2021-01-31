@@ -7,7 +7,7 @@ import (
 	"bookstore/api/internal/types"
 	"bookstore/rpc/add/adder"
 
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/core/logx"
 )
 
 type AddLogic struct {

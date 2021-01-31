@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/core/stringx"
+	"github.com/sjclijie/go-zero/core/stringx"
 )
 
 // because json.Number doesn't support strconv.ParseUint(...),

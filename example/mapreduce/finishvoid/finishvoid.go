@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/mr"
-	"github.com/tal-tech/go-zero/core/timex"
+	"github.com/sjclijie/go-zero/core/mr"
+	"github.com/sjclijie/go-zero/core/timex"
 )
 
 func main() {

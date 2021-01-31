@@ -5,11 +5,11 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/service"
-	"github.com/tal-tech/go-zero/core/stat"
-	"github.com/tal-tech/go-zero/core/syncx"
-	"github.com/tal-tech/go-zero/rest"
+	"github.com/sjclijie/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/core/service"
+	"github.com/sjclijie/go-zero/core/stat"
+	"github.com/sjclijie/go-zero/core/syncx"
+	"github.com/sjclijie/go-zero/rest"
 )
 
 func main() {

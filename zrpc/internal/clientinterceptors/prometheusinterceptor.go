@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/metric"
-	"github.com/tal-tech/go-zero/core/timex"
+	"github.com/sjclijie/go-zero/core/metric"
+	"github.com/sjclijie/go-zero/core/timex"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 )

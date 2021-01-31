@@ -4,13 +4,13 @@ import (
 	"fmt"
 
 	"github.com/logrusorgru/aurora"
-	"github.com/tal-tech/go-zero/core/errorx"
-	"github.com/tal-tech/go-zero/tools/goctl/api/gogen"
-	"github.com/tal-tech/go-zero/tools/goctl/docker"
-	"github.com/tal-tech/go-zero/tools/goctl/kube"
-	modelgen "github.com/tal-tech/go-zero/tools/goctl/model/sql/gen"
-	rpcgen "github.com/tal-tech/go-zero/tools/goctl/rpc/generator"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/sjclijie/go-zero/core/errorx"
+	"github.com/sjclijie/go-zero/tools/goctl/api/gogen"
+	"github.com/sjclijie/go-zero/tools/goctl/docker"
+	"github.com/sjclijie/go-zero/tools/goctl/kube"
+	modelgen "github.com/sjclijie/go-zero/tools/goctl/model/sql/gen"
+	rpcgen "github.com/sjclijie/go-zero/tools/goctl/rpc/generator"
+	"github.com/sjclijie/go-zero/tools/goctl/util"
 	"github.com/urfave/cli"
 )
 

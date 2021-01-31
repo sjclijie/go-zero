@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/core/breaker"
+	"github.com/sjclijie/go-zero/core/breaker"
 )
 
 func TestRejectedPipe_All(t *testing.T) {

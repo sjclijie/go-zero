@@ -4,10 +4,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/parser"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/tal-tech/go-zero/tools/goctl/util/ctx"
-	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/sjclijie/go-zero/tools/goctl/rpc/parser"
+	"github.com/sjclijie/go-zero/tools/goctl/util"
+	"github.com/sjclijie/go-zero/tools/goctl/util/ctx"
+	"github.com/sjclijie/go-zero/tools/goctl/util/stringx"
 )
 
 const (

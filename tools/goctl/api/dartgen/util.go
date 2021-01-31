@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/api/util"
+	"github.com/sjclijie/go-zero/tools/goctl/api/util"
 )
 
 func lowCamelCase(s string) string {

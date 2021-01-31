@@ -10,7 +10,7 @@ import (
 
 	"bookstore/rpc/check/check"
 
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/sjclijie/go-zero/zrpc"
 )
 
 type (

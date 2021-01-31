@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tal-tech/go-zero/core/jsonx"
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/execx"
+	"github.com/sjclijie/go-zero/core/jsonx"
+	"github.com/sjclijie/go-zero/tools/goctl/rpc/execx"
 )
 
 type Module struct {

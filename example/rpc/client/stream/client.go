@@ -7,9 +7,9 @@ import (
 	"log"
 	"sync"
 
-	"github.com/tal-tech/go-zero/core/discov"
-	"github.com/tal-tech/go-zero/example/rpc/remote/stream"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/sjclijie/go-zero/core/discov"
+	"github.com/sjclijie/go-zero/example/rpc/remote/stream"
+	"github.com/sjclijie/go-zero/zrpc"
 )
 
 const name = "kevin"

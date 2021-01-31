@@ -6,7 +6,7 @@ import (
 	"shorturl/rpc/transform/internal/svc"
 	transform "shorturl/rpc/transform/pb"
 
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/core/logx"
 )
 
 type ExpandLogic struct {

@@ -7,12 +7,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/executors"
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/example/graceful/etcd/api/svc"
-	"github.com/tal-tech/go-zero/example/graceful/etcd/api/types"
-	"github.com/tal-tech/go-zero/example/graceful/etcd/rpc/graceful"
-	"github.com/tal-tech/go-zero/rest/httpx"
+	"github.com/sjclijie/go-zero/core/executors"
+	"github.com/sjclijie/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/example/graceful/etcd/api/svc"
+	"github.com/sjclijie/go-zero/example/graceful/etcd/api/types"
+	"github.com/sjclijie/go-zero/example/graceful/etcd/rpc/graceful"
+	"github.com/sjclijie/go-zero/rest/httpx"
 )
 
 func gracefulHandler(ctx *svc.ServiceContext) http.HandlerFunc {

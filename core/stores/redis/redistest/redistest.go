@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/alicebob/miniredis/v2"
-	"github.com/tal-tech/go-zero/core/lang"
-	"github.com/tal-tech/go-zero/core/stores/redis"
+	"github.com/sjclijie/go-zero/core/lang"
+	"github.com/sjclijie/go-zero/core/stores/redis"
 )
 
 func CreateRedis() (r *redis.Redis, clean func(), err error) {
