@@ -24,8 +24,6 @@ require (
 	github.com/lib/pq v1.3.0
 	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/olekukonko/tablewriter v0.0.4
-	github.com/onsi/ginkgo v1.14.2 // indirect
-	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/prometheus/client_golang v1.5.1
 	github.com/spaolacci/murmur3 v1.1.0
 	github.com/stretchr/testify v1.5.1

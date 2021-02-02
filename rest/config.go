@@ -5,7 +5,6 @@ import (
 
 	"github.com/sjclijie/go-zero/core/service"
 )
-
 type (
 	PrivateKeyConf struct {
 		Fingerprint string
