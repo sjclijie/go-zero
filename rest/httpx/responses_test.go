@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/sjclijie/go-zero/core/logx"
+	"github.com/stretchr/testify/assert"
 )
 
 type message struct {
@@ -19,65 +19,49 @@ func init() {
 }
 
 func TestError(t *testing.T) {
-	const (
-		body        = "foo"
-		wrappedBody = `"foo"`
-	)
 
-	tests := []struct {
-		name         string
-		input        string
-		errorHandler func(error) (int, interface{})
-		expectBody   string
-		expectCode   int
-	}{
-		{
-			name:       "default error handler",
-			input:      body,
-			expectBody: body,
-			expectCode: http.StatusBadRequest,
-		},
-		{
-			name:  "customized error handler return string",
-			input: body,
-			errorHandler: func(err error) (int, interface{}) {
-				return http.StatusForbidden, err.Error()
-			},
-			expectBody: wrappedBody,
-			expectCode: http.StatusForbidden,
-		},
-		{
-			name:  "customized error handler return error",
-			input: body,
-			errorHandler: func(err error) (int, interface{}) {
-				return http.StatusForbidden, err
-			},
-			expectBody: body,
-			expectCode: http.StatusForbidden,
-		},
+	w1 := tracedResponseWriter{
+		headers: make(map[string][]string),
 	}
+	Error(&w1, errors.New("hello world"))
+	assert.Equal(t, "{\"code\":400,\"msg\":\"hello world\",\"data\":{}}", w1.builder.String())
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			w := tracedResponseWriter{
-				headers: make(map[string][]string),
-			}
-			if test.errorHandler != nil {
-				lock.RLock()
-				prev := errorHandler
-				lock.RUnlock()
-				SetErrorHandler(test.errorHandler)
-				defer func() {
-					lock.Lock()
-					errorHandler = prev
-					lock.Unlock()
-				}()
-			}
-			Error(&w, errors.New(test.input))
-			assert.Equal(t, test.expectCode, w.code)
-			assert.Equal(t, test.expectBody, strings.TrimSpace(w.builder.String()))
-		})
+	w2 := tracedResponseWriter{
+		headers: make(map[string][]string),
 	}
+	e := NewResponseError(CodeOption(50000), MsgOption("this is msg"), DataOption(struct {
+		Name string
+		Age  int64
+	}{Name: "lijie", Age: 40}))
+	Error(&w2, e)
+	assert.Equal(t, "{\"code\":50000,\"msg\":\"this is msg\",\"data\":{\"Name\":\"lijie\",\"Age\":40}}", w2.builder.String())
+
+	w3 := tracedResponseWriter{
+		headers: make(map[string][]string),
+	}
+	e2 := NewResponseError(CodeOption(50000), MsgOption("this is msg"))
+	Error(&w3, e2)
+	assert.Equal(t, "{\"code\":50000,\"msg\":\"this is msg\",\"data\":{}}", w3.builder.String())
+
+	w4 := tracedResponseWriter{
+		headers: make(map[string][]string),
+	}
+	e3 := NewResponseError(CodeOption(50000))
+	Error(&w4, e3)
+	assert.Equal(t, "{\"code\":50000,\"msg\":\"unknown error.\",\"data\":{}}", w4.builder.String())
+
+	w5 := tracedResponseWriter{
+		headers: make(map[string][]string),
+	}
+	e4 := NewResponseError()
+	Error(&w5, e4)
+	assert.Equal(t, "{\"code\":400,\"msg\":\"unknown error.\",\"data\":{}}", w5.builder.String())
+
+	w6 := tracedResponseWriter{
+		headers: make(map[string][]string),
+	}
+	Error(&w6, errors.New(""))
+	assert.Equal(t, "{\"code\":400,\"msg\":\"request failed.\",\"data\":{}}", w6.builder.String())
 }
 
 func TestOk(t *testing.T) {
@@ -86,6 +70,7 @@ func TestOk(t *testing.T) {
 	}
 	Ok(&w)
 	assert.Equal(t, http.StatusOK, w.code)
+	assert.Equal(t, "{\"code\":0,\"msg\":\"request successes.\",\"data\":{}}", w.builder.String())
 }
 
 func TestOkJson(t *testing.T) {
@@ -95,7 +80,7 @@ func TestOkJson(t *testing.T) {
 	msg := message{Name: "anyone"}
 	OkJson(&w, msg)
 	assert.Equal(t, http.StatusOK, w.code)
-	assert.Equal(t, "{\"name\":\"anyone\"}", w.builder.String())
+	assert.Equal(t, "{\"code\":0,\"msg\":\"request successes.\",\"data\":{\"name\":\"anyone\"}}", w.builder.String())
 }
 
 func TestWriteJsonTimeout(t *testing.T) {

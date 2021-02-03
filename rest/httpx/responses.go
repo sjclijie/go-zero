@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"sync"
 
@@ -13,31 +14,71 @@ var (
 	lock         sync.RWMutex
 )
 
-func Error(w http.ResponseWriter, err error) {
-	lock.RLock()
-	handler := errorHandler
-	lock.RUnlock()
+const (
+	RequestSuccessCode = 0
+	RequestSuccessMsg  = "request successes."
 
-	if handler == nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	RequestBadCode = 400
+	RequestBadMsg  = "request failed."
+)
+
+type ret struct {
+	Code int64       `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
+func newRet() *ret {
+	return &ret{
+		Code: RequestSuccessCode,
+		Msg:  RequestSuccessMsg,
+		Data: &struct{}{},
 	}
+}
 
-	code, body := errorHandler(err)
-	e, ok := body.(error)
-	if ok {
-		http.Error(w, e.Error(), code)
+func (r *ret) wrapRet(v interface{}) *ret {
+
+	r.Code = RequestSuccessCode
+	r.Msg = RequestSuccessMsg
+	r.Data = v
+
+	return r
+}
+
+func (r *ret) wrapErrRet(err error) *ret {
+	if ok := errors.Is(err, &ResponseError{}); ok {
+		e, _ := err.(*ResponseError)
+		r.Code = e.Code
+		r.Msg = e.Msg
+		r.Data = e.Data
+
+		if r.Code == 0 {
+			r.Code = RequestBadCode
+		}
+
 	} else {
-		WriteJson(w, code, body)
+		r.Code = RequestBadCode
+		r.Msg = err.Error()
+		r.Data = &struct{}{}
+
+		if r.Msg == "" {
+			r.Msg = RequestBadMsg
+		}
 	}
+
+	return r
+}
+
+func Error(w http.ResponseWriter, err error) {
+	WriteJson(w, http.StatusOK, newRet().wrapErrRet(err))
 }
 
 func Ok(w http.ResponseWriter) {
-	w.WriteHeader(http.StatusOK)
+	WriteJson(w, http.StatusOK, newRet())
 }
 
 func OkJson(w http.ResponseWriter, v interface{}) {
-	WriteJson(w, http.StatusOK, v)
+	WriteJson(w, http.StatusOK, newRet().wrapRet(v))
 }
 
 func SetErrorHandler(handler func(error) (int, interface{})) {
