@@ -3,27 +3,27 @@ package handler
 import (
 	"net/http"
 
-	"bookstore/api/internal/logic"
+	"bookstore/api/internal/logic/book"
 	"bookstore/api/internal/svc"
 	"bookstore/api/internal/types"
 
 	"github.com/sjclijie/go-zero/rest/httpx"
 )
 
-func AddHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func CheckHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AddReq
+		var req types.CheckReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := logic.NewAddLogic(r.Context(), ctx)
-		resp, err := l.Add(req)
+		l := logic.NewCheckLogic(r.Context(), ctx)
+		resp, err := l.Check(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
-			httpx.WriteJson(w, http.StatusOK, resp)
+			httpx.OkJson(w, resp)
 		}
 	}
 }

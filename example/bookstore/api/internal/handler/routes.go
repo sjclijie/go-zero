@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	book "bookstore/api/internal/handler/book"
 	"bookstore/api/internal/svc"
 
 	"github.com/sjclijie/go-zero/rest"
@@ -11,17 +12,20 @@ import (
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/add",
-				Handler: AddHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/check",
-				Handler: CheckHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AdminCheck},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/add",
+					Handler: book.AddHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/check",
+					Handler: book.CheckHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 }

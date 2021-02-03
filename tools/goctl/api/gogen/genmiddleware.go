@@ -33,13 +33,13 @@ func (m *{{.name}})Handle(next http.HandlerFunc) http.HandlerFunc {
 func genMiddleware(dir string, cfg *config.Config, api *spec.ApiSpec) error {
 	var middlewares = getMiddleware(api)
 	for _, item := range middlewares {
-		middlewareFilename := strings.TrimSuffix(strings.ToLower(item), "middleware") + "_middleware"
-		filename, err := format.FileNamingFormat(cfg.NamingFormat, middlewareFilename)
+		//middlewareFilename := strings.TrimSuffix(strings.ToLower(item), "middleware")
+		filename, err := format.FileNamingFormat(cfg.NamingFormat, item) //使用原名称，不做转换
 		if err != nil {
 			return err
 		}
 
-		name := strings.TrimSuffix(item, "Middleware") + "Middleware"
+		name := strings.TrimSuffix(item, "Middleware")
 		err = genFile(fileGenConfig{
 			dir:             dir,
 			subdir:          middlewareDir,

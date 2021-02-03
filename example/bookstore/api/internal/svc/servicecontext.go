@@ -2,22 +2,18 @@ package svc
 
 import (
 	"bookstore/api/internal/config"
-	"bookstore/rpc/add/adder"
-	"bookstore/rpc/check/checker"
-
-	"github.com/sjclijie/go-zero/zrpc"
+	"bookstore/api/internal/middleware"
+	"github.com/sjclijie/go-zero/rest"
 )
 
 type ServiceContext struct {
-	Config  config.Config
-	Adder   adder.Adder
-	Checker checker.Checker
+	Config     config.Config
+	AdminCheck rest.Middleware
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config:  c,
-		Adder:   adder.NewAdder(zrpc.MustNewClient(c.Add)),
-		Checker: checker.NewChecker(zrpc.MustNewClient(c.Check)),
+		Config:     c,
+		AdminCheck: middleware.NewAdminCheck().Handle,
 	}
 }

@@ -3,6 +3,7 @@ package gogen
 import (
 	"errors"
 	"fmt"
+	"github.com/sjclijie/go-zero/tools/goctl/util"
 	"os"
 	"path"
 	"path/filepath"
@@ -17,7 +18,6 @@ import (
 	"github.com/sjclijie/go-zero/tools/goctl/api/parser"
 	apiutil "github.com/sjclijie/go-zero/tools/goctl/api/util"
 	"github.com/sjclijie/go-zero/tools/goctl/config"
-	"github.com/sjclijie/go-zero/tools/goctl/util"
 	"github.com/urfave/cli"
 )
 
