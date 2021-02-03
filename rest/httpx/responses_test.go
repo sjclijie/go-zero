@@ -55,7 +55,7 @@ func TestError(t *testing.T) {
 	}
 	e4 := NewResponseError()
 	Error(&w5, e4)
-	assert.Equal(t, "{\"code\":400,\"msg\":\"unknown error.\",\"data\":{}}", w5.builder.String())
+	assert.Equal(t, "{\"code\":0,\"msg\":\"unknown error.\",\"data\":{}}", w5.builder.String())
 
 	w6 := tracedResponseWriter{
 		headers: make(map[string][]string),
