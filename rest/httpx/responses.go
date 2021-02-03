@@ -48,11 +48,12 @@ func (r *ret) wrapRet(v interface{}) *ret {
 func (r *ret) wrapErrRet(err error) *ret {
 	if ok := errors.Is(err, &ResponseError{}); ok {
 		e, _ := err.(*ResponseError)
-		r.Code = e.Code
 		r.Msg = e.Msg
 		r.Data = e.Data
 
-		if r.Code == 0 {
+		if e.Code != nil {
+			r.Code = *e.Code
+		} else {
 			r.Code = RequestBadCode
 		}
 
