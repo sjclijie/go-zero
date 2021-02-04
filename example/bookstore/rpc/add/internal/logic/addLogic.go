@@ -3,9 +3,8 @@ package logic
 import (
 	"context"
 
-	add "bookstore/rpc/add/adder"
+	"bookstore/rpc/add/add"
 	"bookstore/rpc/add/internal/svc"
-	"bookstore/rpc/model"
 
 	"github.com/sjclijie/go-zero/core/logx"
 )
@@ -25,15 +24,7 @@ func NewAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddLogic {
 }
 
 func (l *AddLogic) Add(in *add.AddReq) (*add.AddResp, error) {
-	_, err := l.svcCtx.Model.Insert(model.Book{
-		Book:  in.Book,
-		Price: in.Price,
-	})
-	if err != nil {
-		return nil, err
-	}
+	// todo: add your logic here and delete this line
 
-	return &add.AddResp{
-		Ok: true,
-	}, nil
+	return &add.AddResp{}, nil
 }

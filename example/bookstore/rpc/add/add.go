@@ -13,7 +13,6 @@ import (
 	"bookstore/rpc/add/internal/svc"
 
 	"github.com/sjclijie/go-zero/core/conf"
-	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
@@ -26,12 +25,12 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
-	adderSrv := server.NewAdderServer(ctx)
+	srv := server.NewAdderServer(ctx)
 
-	s, err := zrpc.NewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		add.RegisterAdderServer(grpcServer, adderSrv)
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		add.RegisterAdderServer(grpcServer, srv)
 	})
-	logx.Must(err)
+	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
