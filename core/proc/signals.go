@@ -32,7 +32,7 @@ func init() {
 					profiler.Stop()
 					profiler = nil
 				}
-			case syscall.SIGTERM:
+			case syscall.SIGTERM, syscall.SIGINT:
 				gracefulStop(signals)
 			default:
 				logx.Error("Got unregistered signal:", v)
