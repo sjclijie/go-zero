@@ -19,14 +19,18 @@ const (
 	timeFormat       = "0102150405"
 )
 
+var signals chan os.Signal
+
 func init() {
 	go func() {
 		// https://golang.org/pkg/os/signal/#Notify
-		signals := make(chan os.Signal, 1)
-		signal.Notify(signals, syscall.SIGUSR1, syscall.SIGTERM)
+		signals = make(chan os.Signal, 1)
+		signal.Notify(signals, syscall.SIGUSR1, syscall.SIGTERM, syscall.SIGINT)
 
 		for {
 			v := <-signals
+			fmt.Printf("signal: %+v\n", v.String())
+
 			switch v {
 			case syscall.SIGUSR1:
 				dumpGoroutines()
