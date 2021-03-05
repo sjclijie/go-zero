@@ -3,6 +3,7 @@ package template
 // 通过id查询
 var FindOne = `
 func (m *default{{.upperStartCamelObject}}Model) FindOne({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
+/*
 	{{if .withCache}}{{.cacheKey}}
 	var resp {{.upperStartCamelObject}}
 	err := m.QueryRow(&resp, {{.cacheKeyVariable}}, func(conn sqlx.SqlConn, v interface{}) error {
@@ -27,6 +28,8 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne({{.lowerStartCamelPrima
 	default:
 		return nil, err
 	}{{end}}
+*/
+return nil, nil
 }
 `
 
@@ -65,7 +68,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindOneBy{{.upperField}}({{.in}
 `
 var FindOneByFieldExtraMethod = `
 func (m *default{{.upperStartCamelObject}}Model) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", {{.primaryKeyLeft}}, primary)
+	return fmt.Sprintf("#%s%v", {{.primaryKeyLeft}}, primary)
 }
 
 func (m *default{{.upperStartCamelObject}}Model) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {

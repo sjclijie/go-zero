@@ -2,6 +2,7 @@ package template
 
 var Delete = `
 func (m *default{{.upperStartCamelObject}}Model) Delete({{.lowerStartCamelPrimaryKey}} {{.dataType}}) error {
+/*
 	{{if .withCache}}{{if .containsIndexCache}}data, err:=m.FindOne({{.lowerStartCamelPrimaryKey}})
 	if err!=nil{
 		return err
@@ -14,6 +15,8 @@ func (m *default{{.upperStartCamelObject}}Model) Delete({{.lowerStartCamelPrimar
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("delete from %s where {{.originalPrimaryKey}} = ?", m.table)
 		_,err:=m.conn.Exec(query, {{.lowerStartCamelPrimaryKey}}){{end}}
 	return err
+*/
+return nil
 }
 `
 

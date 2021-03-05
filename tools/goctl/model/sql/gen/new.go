@@ -3,6 +3,7 @@ package gen
 import (
 	"github.com/sjclijie/go-zero/tools/goctl/model/sql/template"
 	"github.com/sjclijie/go-zero/tools/goctl/util"
+	"github.com/sjclijie/go-zero/tools/goctl/util/stringx"
 )
 
 func genNew(table Table, withCache bool) (string, error) {
@@ -17,6 +18,7 @@ func genNew(table Table, withCache bool) (string, error) {
 			"table":                 wrapWithRawString(table.Name.Source()),
 			"withCache":             withCache,
 			"upperStartCamelObject": table.Name.ToCamel(),
+			"lowerStartCamelObject": stringx.From(table.Name.ToCamel()).Untitle(),
 		})
 	if err != nil {
 		return "", err

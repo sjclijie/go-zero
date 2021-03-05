@@ -7,7 +7,8 @@ type (
 	}
 
 	default{{.upperStartCamelObject}}Model struct {
-		{{if .withCache}}sqlc.CachedConn{{else}}conn sqlx.SqlConn{{end}}
+		model.BaseModel
+		*gorm.DB
 		table string
 	}
 

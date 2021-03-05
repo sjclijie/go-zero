@@ -29,7 +29,8 @@ func genVars(table Table, withCache bool) (string, error) {
 			"autoIncrement":         table.PrimaryKey.AutoIncrement,
 			"originalPrimaryKey":    wrapWithRawString(table.PrimaryKey.Name.Source()),
 			"withCache":             withCache,
-		})
+			"tableName":             table.Name.Lower(),
+	})
 	if err != nil {
 		return "", err
 	}

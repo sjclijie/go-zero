@@ -10,5 +10,6 @@ var (
 	{{.lowerStartCamelObject}}RowsWithPlaceHolder = strings.Join(stringx.Remove({{.lowerStartCamelObject}}FieldNames, "{{.originalPrimaryKey}}", "%screate_time%s", "%supdate_time%s"), "=?,") + "=?"
 
 	{{if .withCache}}{{.cacheKeys}}{{end}}
+	{{.lowerStartCamelObject}}TableName = "{{.tableName}}"
 )
 `, "`", "`", "`", "`", "`", "`", "`", "`")
