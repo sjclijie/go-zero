@@ -20,3 +20,6 @@
 # vim auto backup file
 *~
 !OWNERS
+
+#test
+test/*
