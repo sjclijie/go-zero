@@ -200,10 +200,16 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 	}
 	for key, columns := range keyMap {
 		for _, item := range columns {
+			isStatusColumn := item.Name == "status"
+
 			isColumnDefaultNull := item.ColumnDefault == nil && item.IsNullAble == "YES"
 			dt, err := converter.ConvertDataType(item.DataType, isColumnDefaultNull)
 			if err != nil {
 				return nil, err
+			}
+
+			if isStatusColumn {
+				dt = "model.StatusEnum"
 			}
 
 			f := Field{
@@ -213,9 +219,11 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 				IsPrimaryKey: primaryColumn.Name == item.Name,
 				Comment:      item.Comment,
 			}
+
 			if key == "UNI" {
 				f.IsUniqueKey = true
 			}
+
 			reply.Fields = append(reply.Fields, f)
 		}
 	}

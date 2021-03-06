@@ -3,9 +3,9 @@ package template
 var (
 	Imports = `import (
 	"context"
-	"database/sql"
 	"github.com/sjclijie/go-zero/core/stores/redis"
 	"github.com/tmsong/gorm"
+	"time"
 
 	"hll-iam-server/rpc/permission/internal/helper/mysql"
 		"hll-iam-server/rpc/permission/internal/model"
