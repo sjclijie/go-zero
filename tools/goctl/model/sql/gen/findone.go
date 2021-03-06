@@ -13,7 +13,7 @@ func genFindOne(table Table, withCache bool) (string, string, error) {
 		return "", "", err
 	}
 
-	output, err := util.With("findOne").
+	output, err := util.With("Query").
 		Parse(text).
 		Execute(map[string]interface{}{
 			"withCache":                 withCache,
@@ -34,7 +34,49 @@ func genFindOne(table Table, withCache bool) (string, string, error) {
 		return "", "", err
 	}
 
-	findOneMethod, err := util.With("findOneMethod").
+	findOneMethod, err := util.With("Query").
+		Parse(text).
+		Execute(map[string]interface{}{
+			"upperStartCamelObject":     camel,
+			"lowerStartCamelPrimaryKey": stringx.From(table.PrimaryKey.Name.ToCamel()).Untitle(),
+			"dataType":                  table.PrimaryKey.DataType,
+		})
+	if err != nil {
+		return "", "", err
+	}
+
+	return output.String(), findOneMethod.String(), nil
+}
+
+func genFindListOne(table Table, withCache bool) (string, string, error) {
+	camel := table.Name.ToCamel()
+	text, err := util.LoadTemplate(category, findOneTemplateFile, template.FindList)
+	if err != nil {
+		return "", "", err
+	}
+
+	output, err := util.With("Query").
+		Parse(text).
+		Execute(map[string]interface{}{
+			"withCache":                 withCache,
+			"upperStartCamelObject":     camel,
+			"lowerStartCamelObject":     stringx.From(camel).Untitle(),
+			"originalPrimaryKey":        wrapWithRawString(table.PrimaryKey.Name.Source()),
+			"lowerStartCamelPrimaryKey": stringx.From(table.PrimaryKey.Name.ToCamel()).Untitle(),
+			"dataType":                  table.PrimaryKey.DataType,
+			"cacheKey":                  table.CacheKey[table.PrimaryKey.Name.Source()].KeyExpression,
+			"cacheKeyVariable":          table.CacheKey[table.PrimaryKey.Name.Source()].Variable,
+		})
+	if err != nil {
+		return "", "", err
+	}
+
+	text, err = util.LoadTemplate(category, findOneMethodTemplateFile, template.FindListMethod)
+	if err != nil {
+		return "", "", err
+	}
+
+	findOneMethod, err := util.With("Query").
 		Parse(text).
 		Execute(map[string]interface{}{
 			"upperStartCamelObject":     camel,

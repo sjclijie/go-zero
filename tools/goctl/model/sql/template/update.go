@@ -1,18 +1,10 @@
 package template
 
 var Update = `
-func (m *default{{.upperStartCamelObject}}Model) Update(data {{.upperStartCamelObject}}) error {
-/*
-	{{if .withCache}}{{.primaryCacheKey}}
-    _, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where {{.originalPrimaryKey}} = ?", m.table, {{.lowerStartCamelObject}}RowsWithPlaceHolder)
-		return conn.Exec(query, {{.expressionValues}})
-	}, {{.primaryKeyVariable}}){{else}}query := fmt.Sprintf("update %s set %s where {{.originalPrimaryKey}} = ?", m.table, {{.lowerStartCamelObject}}RowsWithPlaceHolder)
-    _,err:=m.conn.Exec(query, {{.expressionValues}}){{end}}
-	return err
-*/
-return nil
+func (m *default{{.upperStartCamelObject}}Model) Update( condition map[string]interface{}, data *{{.upperStartCamelObject}}) ( int64, error ) {
+	db := m.Table(m.table).Where(condition).Update(data)
+	return db.RowsAffected, db.Error
 }
 `
 
-var UpdateMethod = `Update(data {{.upperStartCamelObject}}) error`
+var UpdateMethod = `Update(condition map[string]interface{}, data *{{.upperStartCamelObject}})(int64, error)`

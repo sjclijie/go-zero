@@ -233,12 +233,17 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, er
 		return "", err
 	}
 
+	findListCode, findListCodeMethod, err := genFindListOne(table, withCache)
+	if err != nil {
+		return "", err
+	}
+
 	ret, err := genFindOneByField(table, withCache)
 	if err != nil {
 		return "", err
 	}
 
-	findCode = append(findCode, findOneCode, ret.findOneMethod)
+	findCode = append(findCode, findOneCode, ret.findOneMethod, findListCode)
 	updateCode, updateCodeMethod, err := genUpdate(table, withCache)
 	if err != nil {
 		return "", err
@@ -250,7 +255,14 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, er
 	}
 
 	var list []string
-	list = append(list, insertCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, updateCodeMethod, deleteCodeMethod)
+	list = append(list,
+		insertCodeMethod,
+		findOneCodeMethod,
+		ret.findOneInterfaceMethod,
+		findListCodeMethod,
+		updateCodeMethod,
+		deleteCodeMethod,
+	)
 	typesCode, err := genTypes(table, strings.Join(modelutil.TrimStringSlice(list), util.NL), withCache)
 	if err != nil {
 		return "", err

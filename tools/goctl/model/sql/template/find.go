@@ -2,34 +2,25 @@ package template
 
 // 通过id查询
 var FindOne = `
-func (m *default{{.upperStartCamelObject}}Model) FindOne({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
-/*
-	{{if .withCache}}{{.cacheKey}}
-	var resp {{.upperStartCamelObject}}
-	err := m.QueryRow(&resp, {{.cacheKeyVariable}}, func(conn sqlx.SqlConn, v interface{}) error {
-		query :=  fmt.Sprintf("select %s from %s where {{.originalPrimaryKey}} = ? limit 1", {{.lowerStartCamelObject}}Rows, m.table)
-		return conn.QueryRow(v, query, {{.lowerStartCamelPrimaryKey}})
-	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}{{else}}query := fmt.Sprintf("select %s from %s where {{.originalPrimaryKey}} = ? limit 1", {{.lowerStartCamelObject}}Rows, m.table)
-	var resp {{.upperStartCamelObject}}
-	err := m.conn.QueryRow(&resp, query, {{.lowerStartCamelPrimaryKey}})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}{{end}}
-*/
-return nil, nil
+
+func (m *default{{.upperStartCamelObject}}Model) Query(condition map[string]interface{}) (*{{.upperStartCamelObject}}, error) {
+	var ret {{.upperStartCamelObject}}
+	err := m.Where(condition).Where(&{{.upperStartCamelObject}}{
+		Status: model.StatusNormal,
+	}).Find(&ret).Error
+	return &ret, err
+}
+`
+
+// 通过id查询
+var FindList = `
+
+func (m *default{{.upperStartCamelObject}}Model) QueryList(condition map[string]interface{}) ([]*{{.upperStartCamelObject}}, error) {
+	var ret []*{{.upperStartCamelObject}}
+	err := m.Where(condition).Where(&{{.upperStartCamelObject}}{
+		Status: model.StatusNormal,
+	}).Find(&ret).Error
+	return ret, err
 }
 `
 
@@ -70,12 +61,8 @@ var FindOneByFieldExtraMethod = `
 func (m *default{{.upperStartCamelObject}}Model) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("#%s%v", {{.primaryKeyLeft}}, primary)
 }
-
-func (m *default{{.upperStartCamelObject}}Model) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where {{.originalPrimaryField}} = ? limit 1", {{.lowerStartCamelObject}}Rows, m.table )
-	return conn.QueryRow(v, query, primary)
-}
 `
 
-var FindOneMethod = `FindOne({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error)`
+var FindOneMethod = `Query( condition map[string]interface{} ) ( *{{.upperStartCamelObject}}, error)`
+var FindListMethod = `QueryList( condition map[string]interface{} ) ( []*{{.upperStartCamelObject}}, error)`
 var FindOneByFieldMethod = `FindOneBy{{.upperField}}({{.in}}) (*{{.upperStartCamelObject}}, error) `
