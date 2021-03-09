@@ -173,27 +173,3 @@ GO111MODULE=on GOPROXY=https://goproxy.cn/,direct go get -u github.com/sjclijie/
   | [goctl-swagger](https://github.com/zeromicro/goctl-swagger) | 一键生成 `api` 的 `swagger` 文档 |
   | [goctl-android](https://github.com/zeromicro/goctl-android) | 生成 `java (android)` 端 `http client` 请求代码 |
   | [goctl-go-compact](https://github.com/zeromicro/goctl-go-compact) | 合并 `api` 里同一个 `group` 里的 `handler` 到一个 `go` 文件 |
-
-## 8. 微信公众号
-
-`go-zero` 相关文章都会在 `微服务实践` 公众号整理呈现，欢迎扫码关注，也可以通过公众号私信我 👏
-
-<img src="https://gitee.com/kevwan/static/raw/master/images/wechat-micro.jpg" alt="wechat" width="300" />
-
-## 9. 微信交流群
-
-如果文档中未能覆盖的任何疑问，欢迎您在群里提出，我们会尽快答复。
-
-您可以在群内提出使用中需要改进的地方，我们会考虑合理性并尽快修改。
-
-如果您发现 ***bug*** 请及时提 ***issue***，我们会尽快确认并修改。
-
-为了防止广告用户、识别技术同行，请 ***star*** 后加我时注明 **github** 当前 ***star*** 数，我再拉进 **go-zero** 群，感谢！
-
-加我之前有劳点一下 ***star***，一个小小的 ***star*** 是作者们回答海量问题的动力🤝
-
-<img src="https://gitee.com/kevwan/static/raw/master/images/wechat.jpg" alt="wechat" width="300" />
-
-项目地址：[https://github.com/sjclijie/go-zero](https://github.com/sjclijie/go-zero)
-
-码云地址：[https://gitee.com/kevwan/go-zero](https://gitee.com/kevwan/go-zero) (国内用户可访问gitee，每日自动从github同步代码)
