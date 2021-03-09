@@ -39,6 +39,8 @@ type (
 		IsPrimaryKey bool
 		IsUniqueKey  bool
 		Comment      string
+		Default      interface{}
+		IsNullAble   bool
 	}
 
 	KeyType int
@@ -218,6 +220,8 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 				DataType:     dt,
 				IsPrimaryKey: primaryColumn.Name == item.Name,
 				Comment:      item.Comment,
+				IsNullAble:   item.IsNullAble == "YES",
+				Default:      item.ColumnDefault,
 			}
 
 			if key == "UNI" {

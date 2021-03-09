@@ -20,9 +20,9 @@ var commonMysqlDataTypeMap = map[string]string{
 	"double":    "float64",
 	"decimal":   "float64",
 	// date&time
-	"date":      "*time.Time",
-	"datetime":  "*time.Time",
-	"timestamp": "*time.Time",
+	"date":      "time.Time",
+	"datetime":  "time.Time",
+	"timestamp": "time.Time",
 	"time":      "string",
 	"year":      "int64",
 	// string
@@ -65,7 +65,7 @@ func mayConvertNullType(goDataType string, isDefaultNull bool) string {
 	case "string":
 		return "sql.NullString"
 	case "time.Time":
-		return "*sql.NullTime"
+		return "sql.NullTime"
 	default:
 		return goDataType
 	}

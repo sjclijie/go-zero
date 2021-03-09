@@ -1,3 +1,3 @@
 package template
 
-var Tag = "`db:\"{{.field}}\"`"
+var Tag = "`gorm:\"column:{{.field}}{{if .nullAble}};default:{{.defaultValue}}{{end}}\"`"
