@@ -16,6 +16,7 @@ import (
 const (
 	defaultOption   = "default"
 	stringOption    = "string"
+	requiredOption  = "required"
 	optionalOption  = "optional"
 	optionsOption   = "options"
 	rangeOption     = "range"
@@ -160,7 +161,13 @@ func doParseKeyAndOptions(field reflect.StructField, value string) (string, *fie
 	var fieldOpts fieldOptions
 	for _, segment := range options {
 		option := strings.TrimSpace(segment)
+
+		//默认情况下，字段为可选
+		fieldOpts.Optional = true
+
 		switch {
+		case option == requiredOption:
+			fieldOpts.Optional = false
 		case option == stringOption:
 			fieldOpts.FromString = true
 		case strings.HasPrefix(option, optionalOption):
