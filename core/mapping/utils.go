@@ -154,16 +154,16 @@ func doParseKeyAndOptions(field reflect.StructField, value string) (string, *fie
 	key := strings.TrimSpace(segments[0])
 	options := segments[1:]
 
+	var fieldOpts fieldOptions
+	//默认情况下，字段为可选
+	fieldOpts.Optional = true
+
 	if len(options) == 0 {
-		return key, nil, nil
+		return key, &fieldOpts, nil
 	}
 
-	var fieldOpts fieldOptions
 	for _, segment := range options {
 		option := strings.TrimSpace(segment)
-
-		//默认情况下，字段为可选
-		fieldOpts.Optional = true
 
 		switch {
 		case option == requiredOption:
