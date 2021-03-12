@@ -20,6 +20,8 @@ import (
 	{{.ImportPackages}}
 )
 
+{{ range $index, $element := .Handlers }}
+{{ with $element }}
 func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		{{if .HasRequest}}var req types.{{.RequestType}}
@@ -37,6 +39,10 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
 		}
 	}
 }
+
+
+{{ end }}
+{{ end }}
 `
 
 type Handler struct {
@@ -49,7 +55,29 @@ type Handler struct {
 	HasRequest     bool
 }
 
+type RouterGroup struct {
+	ImportPackages string
+	Handlers       []Handler
+}
+
+type Imports []string
+
+func (arr Imports) Contains(s string) bool {
+	for _, i := range arr {
+		if i == s {
+			return true
+			break
+		}
+	}
+	return false
+}
+
+func (arr Imports) ToString() string {
+	return strings.Join(arr, "\r\t")
+}
+
 func genHandler(dir string, cfg *config.Config, group spec.Group, route spec.Route) error {
+
 	handler := getHandlerName(route)
 	if getHandlerFolderPath(group, route) != handlerDir {
 		handler = strings.Title(handler)
@@ -60,13 +88,63 @@ func genHandler(dir string, cfg *config.Config, group spec.Group, route spec.Rou
 	}
 
 	return doGenToFile(dir, handler, cfg, group, route, Handler{
-		ImportPackages: genHandlerImports(group, route, parentPkg),
+		ImportPackages: strings.Join(genHandlerImports(group, route, parentPkg), "\n\t"),
 		HandlerName:    handler,
 		RequestType:    util.Title(route.RequestTypeName()),
 		LogicType:      strings.Title(getLogicName(route)),
 		Call:           strings.Title(strings.TrimSuffix(handler, "Handler")),
 		HasResp:        len(route.ResponseTypeName()) > 0,
 		HasRequest:     len(route.RequestTypeName()) > 0,
+	})
+}
+
+func genHandlerGroup(dir string, cfg *config.Config, group spec.Group) error {
+
+	routerGroup := RouterGroup{
+		Handlers: make([]Handler, 0),
+	}
+
+	imports := Imports{}
+
+	for _, route := range group.Routes {
+
+		handler := getHandlerName(route)
+		if getHandlerFolderPath(group, route) != handlerDir {
+			handler = strings.Title(handler)
+		}
+		parentPkg, err := getParentPackage(dir)
+		if err != nil {
+			return err
+		}
+
+		importArr := genHandlerImports(group, route, parentPkg)
+		for _, importStr := range importArr {
+			if !imports.Contains(importStr) {
+				imports = append(imports, importStr)
+			}
+		}
+
+		routerGroup.Handlers = append(routerGroup.Handlers, Handler{
+			HandlerName: handler,
+			RequestType: util.Title(route.RequestTypeName()),
+			LogicType:   strings.Title(getLogicName(route)),
+			Call:        strings.Title(strings.TrimSuffix(handler, "Handler")),
+			HasResp:     len(route.ResponseTypeName()) > 0,
+			HasRequest:  len(route.RequestTypeName()) > 0,
+		})
+	}
+
+	routerGroup.ImportPackages = strings.Join(imports, "\n\t")
+
+	return genFile(fileGenConfig{
+		dir:             dir,
+		subdir:          getGroupHandlerFolderPath(group),
+		filename:        fmt.Sprintf("%s%s.go", group.GetAnnotation(groupProperty), "Handler"),
+		templateName:    "handlerTemplate",
+		category:        category,
+		templateFile:    handlerTemplateFile,
+		builtinTemplate: handlerTemplate,
+		data:            routerGroup,
 	})
 }
 
@@ -90,18 +168,25 @@ func doGenToFile(dir, handler string, cfg *config.Config, group spec.Group,
 }
 
 func genHandlers(dir string, cfg *config.Config, api *spec.ApiSpec) error {
-	for _, group := range api.Service.Groups {
-		for _, route := range group.Routes {
-			if err := genHandler(dir, cfg, group, route); err != nil {
-				return err
+
+	/*
+		for _, group := range api.Service.Groups {
+			for _, route := range group.Routes {
+				if err := genHandler(dir, cfg, group, route); err != nil {
+					return err
+				}
 			}
 		}
+	*/
+
+	for _, group := range api.Service.Groups {
+		genHandlerGroup(dir, cfg, group)
 	}
 
 	return nil
 }
 
-func genHandlerImports(group spec.Group, route spec.Route, parentPkg string) string {
+func genHandlerImports(group spec.Group, route spec.Route, parentPkg string) []string {
 	var imports []string
 	imports = append(imports, fmt.Sprintf("\"%s\"",
 		util.JoinPackages(parentPkg, getLogicFolderPath(group, route))))
@@ -111,7 +196,7 @@ func genHandlerImports(group spec.Group, route spec.Route, parentPkg string) str
 	}
 	imports = append(imports, fmt.Sprintf("\"%s/rest/httpx\"", vars.ProjectOpenSourceUrl))
 
-	return strings.Join(imports, "\n\t")
+	return imports
 }
 
 func getHandlerBaseName(route spec.Route) (string, error) {
@@ -129,6 +214,16 @@ func getHandlerFolderPath(group spec.Group, route spec.Route) string {
 		if len(folder) == 0 {
 			return handlerDir
 		}
+	}
+	folder = strings.TrimPrefix(folder, "/")
+	folder = strings.TrimSuffix(folder, "/")
+	return path.Join(handlerDir, folder)
+}
+
+func getGroupHandlerFolderPath(group spec.Group) string {
+	folder := group.GetAnnotation(groupProperty)
+	if len(folder) == 0 {
+		return handlerDir
 	}
 	folder = strings.TrimPrefix(folder, "/")
 	folder = strings.TrimSuffix(folder, "/")
