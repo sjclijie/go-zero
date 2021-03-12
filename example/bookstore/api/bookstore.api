@@ -1,33 +1,3 @@
-type (
-	addReq {
-		Book  string `form:"book"`
-		Price int64  `form:"price"`
-	}
+syntax = "v1"
 
-	addResp {
-		Ok bool `json:"ok"`
-	}
-)
-
-type (
-	checkReq {
-		Book string `form:"book"`
-	}
-
-	checkResp {
-		Found bool  `json:"found"`
-		Price int64 `json:"price"`
-	}
-)
-
-@server(
-	group: book
-	middleware: AdminCheck
-)
-service bookstore-api {
-	@handler AddHandler
-	get /add (addReq) returns (addResp)
-	
-	@handler CheckHandler
-	get /check (checkReq) returns (checkResp)
-}
+import "book.api"
