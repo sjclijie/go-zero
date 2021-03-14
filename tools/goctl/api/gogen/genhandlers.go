@@ -91,7 +91,7 @@ func genHandler(dir string, cfg *config.Config, group spec.Group, route spec.Rou
 		ImportPackages: strings.Join(genHandlerImports(group, route, parentPkg), "\n\t"),
 		HandlerName:    handler,
 		RequestType:    util.Title(route.RequestTypeName()),
-		LogicType:      strings.Title(getLogicName(route)),
+		LogicType:      strings.Title(getLogicNameByGroup(group)),
 		Call:           strings.Title(strings.TrimSuffix(handler, "Handler")),
 		HasResp:        len(route.ResponseTypeName()) > 0,
 		HasRequest:     len(route.RequestTypeName()) > 0,
@@ -127,7 +127,7 @@ func genHandlerGroup(dir string, cfg *config.Config, group spec.Group) error {
 		routerGroup.Handlers = append(routerGroup.Handlers, Handler{
 			HandlerName: handler,
 			RequestType: util.Title(route.RequestTypeName()),
-			LogicType:   strings.Title(getLogicName(route)),
+			LogicType:   strings.Title(getLogicNameByGroup(group)),
 			Call:        strings.Title(strings.TrimSuffix(handler, "Handler")),
 			HasResp:     len(route.ResponseTypeName()) > 0,
 			HasRequest:  len(route.RequestTypeName()) > 0,
@@ -180,7 +180,9 @@ func genHandlers(dir string, cfg *config.Config, api *spec.ApiSpec) error {
 	*/
 
 	for _, group := range api.Service.Groups {
-		genHandlerGroup(dir, cfg, group)
+		if err := genHandlerGroup(dir, cfg, group); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -245,5 +247,14 @@ func getLogicName(route spec.Route) string {
 		panic(err)
 	}
 
+	return handler
+	//return handler + "Logic"
+}
+
+func getLogicNameByGroup(group spec.Group) string {
+	handler := group.GetAnnotation(groupProperty)
+	handler = strings.TrimSpace(handler)
+	handler = strings.TrimSuffix(handler, "handler")
+	handler = strings.TrimSuffix(handler, "Handler")
 	return handler + "Logic"
 }

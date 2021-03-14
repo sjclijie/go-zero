@@ -18,7 +18,7 @@ func AddHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewAddLogic(r.Context(), ctx)
+		l := logic.NewBookLogic(r.Context(), ctx)
 		resp, err := l.Add(req)
 		if err != nil {
 			httpx.Error(w, err)
@@ -36,7 +36,7 @@ func CheckHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewCheckLogic(r.Context(), ctx)
+		l := logic.NewBookLogic(r.Context(), ctx)
 		resp, err := l.Check(req)
 		if err != nil {
 			httpx.Error(w, err)
