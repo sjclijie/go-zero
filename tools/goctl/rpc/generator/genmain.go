@@ -8,7 +8,6 @@ import (
 	conf "github.com/sjclijie/go-zero/tools/goctl/config"
 	"github.com/sjclijie/go-zero/tools/goctl/rpc/parser"
 	"github.com/sjclijie/go-zero/tools/goctl/util"
-	"github.com/sjclijie/go-zero/tools/goctl/util/format"
 	"github.com/sjclijie/go-zero/tools/goctl/util/stringx"
 )
 
@@ -48,12 +47,13 @@ func main() {
 `
 
 func (g *defaultGenerator) GenMain(ctx DirContext, proto parser.Proto, cfg *conf.Config) error {
-	mainFilename, err := format.FileNamingFormat(cfg.NamingFormat, ctx.GetServiceName().Source())
-	if err != nil {
-		return err
-	}
+	//mainFilename, err := format.FileNamingFormat(cfg.NamingFormat, ctx.GetServiceName().Source())
+	//if err != nil {
+	//	return err
+	//}
 
-	fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", mainFilename))
+	//fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", mainFilename))
+	fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", "main"))
 	imports := make([]string, 0)
 	pbImport := fmt.Sprintf(`"%v"`, ctx.GetPb().Package)
 	svcImport := fmt.Sprintf(`"%v"`, ctx.GetSvc().Package)
