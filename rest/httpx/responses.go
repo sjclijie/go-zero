@@ -23,14 +23,14 @@ const (
 )
 
 type ret struct {
-	Code int64       `json:"code"`
+	Ret  int64       `json:"ret"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
 func newRet() *ret {
 	return &ret{
-		Code: RequestSuccessCode,
+		Ret:  RequestSuccessCode,
 		Msg:  RequestSuccessMsg,
 		Data: &struct{}{},
 	}
@@ -38,7 +38,7 @@ func newRet() *ret {
 
 func (r *ret) wrapRet(v interface{}) *ret {
 
-	r.Code = RequestSuccessCode
+	r.Ret = RequestSuccessCode
 	r.Msg = RequestSuccessMsg
 	r.Data = v
 
@@ -48,11 +48,11 @@ func (r *ret) wrapRet(v interface{}) *ret {
 func (r *ret) wrapErrRet(err error) *ret {
 	if ok := errors.Is(err, &ResponseError{}); ok {
 		e, _ := err.(*ResponseError)
-		r.Code = e.Code
+		r.Ret = e.Code
 		r.Msg = e.Msg
 		r.Data = e.Data
 	} else {
-		r.Code = RequestBadCode
+		r.Ret = RequestBadCode
 		r.Msg = err.Error()
 		r.Data = &struct{}{}
 
