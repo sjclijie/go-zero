@@ -171,7 +171,11 @@ func (p parser) astTypeToSpec(in ast.DataType) spec.Type {
 	case *ast.Literal:
 		raw := v.Literal.Text()
 		if api.IsBasicType(raw) {
-			return spec.PrimitiveType{RawName: raw}
+			if raw == "jsonRawMessage" {
+				return spec.PrimitiveType{RawName: "json.RawMessage"}
+			} else {
+				return spec.PrimitiveType{RawName: raw}
+			}
 		} else {
 			return spec.DefineStruct{RawName: raw}
 		}
