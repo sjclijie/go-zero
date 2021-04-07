@@ -3,6 +3,7 @@ package httpx
 import (
 	"encoding/json"
 	"errors"
+	"google.golang.org/grpc/status"
 	"net/http"
 	"sync"
 
@@ -13,6 +14,26 @@ var (
 	errorHandler func(error) (int, interface{})
 	lock         sync.RWMutex
 )
+
+var GrpcCodeMap = map[string]int64{
+	"OK":                  0,
+	"CANCELLED":           100,
+	"UNKNOWN":             200,
+	"INVALID_ARGUMENT":    300,
+	"DEADLINE_EXCEEDED":   400,
+	"NOT_FOUND":           500,
+	"ALREADY_EXISTS":      600,
+	"PERMISSION_DENIED":   700,
+	"RESOURCE_EXHAUSTED":  800,
+	"FAILED_PRECONDITION": 900,
+	"ABORTED":             1000,
+	"OUT_OF_RANGE":        1100,
+	"UNIMPLEMENTED":       1200,
+	"INTERNAL":            1300,
+	"UNAVAILABLE":         1400,
+	"DATA_LOSS":           1500,
+	"UNAUTHENTICATED":     1600,
+}
 
 const (
 	RequestSuccessCode = 0
@@ -37,16 +58,23 @@ func newRet() *ret {
 }
 
 func (r *ret) wrapRet(v interface{}) *ret {
-
 	r.Ret = RequestSuccessCode
 	r.Msg = RequestSuccessMsg
 	r.Data = v
-
 	return r
 }
 
 func (r *ret) wrapErrRet(err error) *ret {
-	if ok := errors.Is(err, &ResponseError{}); ok {
+	if st, ok := status.FromError(err); ok {
+		if ret, ok := GrpcCodeMap[st.Code().String()]; ok {
+			r.Ret = ret
+			r.Msg = st.Message()
+		} else {
+			r.Ret = RequestBadCode
+			r.Msg = err.Error()
+			r.Data = &struct{}{}
+		}
+	} else if ok := errors.Is(err, &ResponseError{}); ok {
 		e, _ := err.(*ResponseError)
 		r.Ret = e.Code
 		r.Msg = e.Msg
@@ -55,10 +83,10 @@ func (r *ret) wrapErrRet(err error) *ret {
 		r.Ret = RequestBadCode
 		r.Msg = err.Error()
 		r.Data = &struct{}{}
+	}
 
-		if r.Msg == "" {
-			r.Msg = RequestBadMsg
-		}
+	if r.Msg == "" {
+		r.Msg = RequestBadMsg
 	}
 
 	return r
