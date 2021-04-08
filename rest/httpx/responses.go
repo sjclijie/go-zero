@@ -3,6 +3,7 @@ package httpx
 import (
 	"encoding/json"
 	"errors"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
 	"sync"
@@ -15,24 +16,24 @@ var (
 	lock         sync.RWMutex
 )
 
-var GrpcCodeMap = map[string]int64{
-	"OK":                 10000,
-	"Canceled":           11000,
-	"Unknown":            12000,
-	"InvalidArgument":    13000,
-	"DeadlineExceeded":   14000,
-	"NotFound":           15000,
-	"AlreadyExists":      16000,
-	"PermissionDenied":   17000,
-	"ResourceExhausted":  18000,
-	"FailedPrecondition": 19000,
-	"Aborted":            20000,
-	"OutOfRange":         21000,
-	"Unimplemented":      22000,
-	"Internal":           23000,
-	"Unavailable":        24000,
-	"DataLoss":           25000,
-	"Unauthenticated":    26000,
+var GrpcCodeMap = map[codes.Code]int64{
+	codes.OK:                 10000,
+	codes.Canceled:           11000,
+	codes.Unknown:            12000,
+	codes.InvalidArgument:    13000,
+	codes.DeadlineExceeded:   14000,
+	codes.NotFound:           15000,
+	codes.AlreadyExists:      16000,
+	codes.PermissionDenied:   17000,
+	codes.ResourceExhausted:  18000,
+	codes.FailedPrecondition: 19000,
+	codes.Aborted:            20000,
+	codes.OutOfRange:         21000,
+	codes.Unimplemented:      22000,
+	codes.Internal:           23000,
+	codes.Unavailable:        24000,
+	codes.DataLoss:           25000,
+	codes.Unauthenticated:    26000,
 }
 
 const (
@@ -66,7 +67,7 @@ func (r *ret) wrapRet(v interface{}) *ret {
 
 func (r *ret) wrapErrRet(err error) *ret {
 	if st, ok := status.FromError(err); ok {
-		if ret, ok := GrpcCodeMap[st.Code().String()]; ok {
+		if ret, ok := GrpcCodeMap[st.Code()]; ok {
 			r.Ret = ret
 			r.Msg = st.Message()
 		} else {
