@@ -1,11 +1,6 @@
 package resolver
 
-import (
-	"strings"
-
-	"google.golang.org/grpc/resolver"
-)
-
+/*
 type directBuilder struct{}
 
 func (d *directBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (
@@ -15,7 +10,7 @@ func (d *directBuilder) Build(target resolver.Target, cc resolver.ClientConn, op
 		return r == EndpointSepChar
 	})
 
-	for _, val := range subset(endpoints, subsetSize) {
+	for _, val := range utils.Subset(endpoints, subsetSize) {
 		addrs = append(addrs, resolver.Address{
 			Addr: val,
 		})
@@ -30,3 +25,4 @@ func (d *directBuilder) Build(target resolver.Target, cc resolver.ClientConn, op
 func (d *directBuilder) Scheme() string {
 	return DirectScheme
 }
+*/

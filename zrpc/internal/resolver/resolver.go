@@ -1,35 +1,56 @@
 package resolver
 
 import (
-	"fmt"
-
+	"github.com/sjclijie/go-zero/core/discov/consul"
+	"github.com/sjclijie/go-zero/core/discov/direct"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"google.golang.org/grpc/resolver"
 )
 
 const (
-	DirectScheme    = "direct"
-	DiscovScheme    = "discov"
-	EndpointSepChar = ','
-	subsetSize      = 32
+	DirectScheme = "direct"
+	EtcdScheme   = "etcd"
+	ConsulScheme = "consul"
 )
 
 var (
-	EndpointSep = fmt.Sprintf("%c", EndpointSepChar)
-	dirBuilder  directBuilder
-	disBuilder  discovBuilder
+	directBuilder = direct.NewBuilder(DirectScheme)
+	etcdV3Builder = etcdv3.NewBuilder(EtcdScheme)
+	consulBuilder = consul.NewBuilder(ConsulScheme)
 )
 
 func RegisterResolver() {
-	resolver.Register(&dirBuilder)
-	resolver.Register(&disBuilder)
+	resolver.Register(directBuilder)
+	resolver.Register(etcdV3Builder)
+	resolver.Register(consulBuilder)
 }
 
-type nopResolver struct {
-	cc resolver.ClientConn
+type ResolverTarget struct {
+	EtcdConf   etcdv3.EtcdConf
+	DirectConf []string
+	ConsulConf consul.ConsulConf
 }
 
-func (r *nopResolver) Close() {
+func (r *ResolverTarget) Build(scheme string) (target string) {
+	switch scheme {
+	case DirectScheme:
+		target = r.buildDirectTarget()
+	case EtcdScheme:
+		target = r.buildEtcdTarget()
+	case ConsulScheme:
+		target = r.buildConsulTarget()
+	}
+	return
 }
 
-func (r *nopResolver) ResolveNow(options resolver.ResolveNowOptions) {
+func (r *ResolverTarget) buildDirectTarget() string {
+	return directBuilder.Target(r.DirectConf)
+}
+
+func (r *ResolverTarget) buildEtcdTarget() string {
+	return etcdV3Builder.Target(r.EtcdConf)
+}
+
+func (r *ResolverTarget) buildConsulTarget() string {
+	return consulBuilder.Target(r.ConsulConf)
 }

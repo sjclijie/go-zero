@@ -1,7 +1,7 @@
-package discov
+package etcdv3
 
 import (
-	"github.com/sjclijie/go-zero/core/discov/internal"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3/internal"
 	"github.com/sjclijie/go-zero/core/logx"
 )
 

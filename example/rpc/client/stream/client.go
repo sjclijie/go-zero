@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"log"
 	"sync"
 
-	"github.com/sjclijie/go-zero/core/discov"
 	"github.com/sjclijie/go-zero/example/rpc/remote/stream"
 	"github.com/sjclijie/go-zero/zrpc"
 )
@@ -19,7 +19,7 @@ var key = flag.String("key", "zrpc", "the key on etcd")
 func main() {
 	flag.Parse()
 
-	client, err := zrpc.NewClientNoAuth(discov.EtcdConf{
+	client, err := zrpc.NewClientNoAuth(etcdv3.EtcdConf{
 		Hosts: []string{"localhost:2379"},
 		Key:   *key,
 	})

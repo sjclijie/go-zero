@@ -1,9 +1,11 @@
 package logic
 
 import (
+	"bookstore/api/internal/svc"
+	"bookstore/api/internal/types"
 	"context"
-	"bookstore/api/internal/svc"	"bookstore/api/internal/types"
-	"github.com/sjclijie/go-zero/core/logx"
+
+	"github.com/sjclijie/go-zero/core/logx"
 )
 
 type BookLogic struct {
@@ -20,15 +22,8 @@ func NewBookLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BookLogic {
 	}
 }
 
-func (l *BookLogic) Add(req types.AddReq) (*types.AddResp, error) {
+func (l *BookLogic) Add(req types.AddReq) error {
 	// todo: add your logic here and delete this line
 
-	return &types.AddResp{}, nil
+	return nil
 }
-
-func (l *BookLogic) Check(req types.CheckReq) (*types.CheckResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &types.CheckResp{}, nil
-}
-

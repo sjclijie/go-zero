@@ -20,11 +20,6 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/add",
 					Handler: book.AddHandler(serverCtx),
 				},
-				{
-					Method:  http.MethodGet,
-					Path:    "/check",
-					Handler: book.CheckHandler(serverCtx),
-				},
 			}...,
 		),
 	)

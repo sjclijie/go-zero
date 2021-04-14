@@ -1,5 +1,6 @@
 package internal
 
+/*
 import (
 	"fmt"
 	"strings"
@@ -12,7 +13,12 @@ func BuildDirectTarget(endpoints []string) string {
 		strings.Join(endpoints, resolver.EndpointSep))
 }
 
+func BuildEtcdTarget(endpoints []string) string {
+
+}
+
 func BuildDiscovTarget(endpoints []string, key string) string {
 	return fmt.Sprintf("%s://%s/%s", resolver.DiscovScheme,
 		strings.Join(endpoints, resolver.EndpointSep), key)
 }
+*/

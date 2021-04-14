@@ -1,7 +1,8 @@
 package zrpc
 
 import (
-	"github.com/sjclijie/go-zero/core/discov"
+	"github.com/sjclijie/go-zero/core/discov/consul"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"github.com/sjclijie/go-zero/core/service"
 	"github.com/sjclijie/go-zero/core/stores/redis"
 )
@@ -10,7 +11,8 @@ type (
 	RpcServerConf struct {
 		service.ServiceConf
 		ListenOn      string
-		Etcd          discov.EtcdConf    `json:",optional"`
+		Etcd          etcdv3.EtcdConf    `json:",optional"`
+		Consul        consul.ConsulConf  `json:",optional"`
 		Auth          bool               `json:",optional"`
 		Redis         redis.RedisKeyConf `json:",optional"`
 		StrictControl bool               `json:",optional"`
@@ -21,11 +23,12 @@ type (
 	}
 
 	RpcClientConf struct {
-		Etcd      discov.EtcdConf `json:",optional"`
-		Endpoints []string        `json:",optional=!Etcd"`
-		App       string          `json:",optional"`
-		Token     string          `json:",optional"`
-		Timeout   int64           `json:",optional"`
+		Etcd      etcdv3.EtcdConf   `json:",optional"`
+		Consul    consul.ConsulConf `json:",optional"`
+		Endpoints []string          `json:",optional"`
+		App       string            `json:",optional"`
+		Token     string            `json:",optional"`
+		Timeout   int64             `json:",optional"`
 	}
 )
 
@@ -39,7 +42,7 @@ func NewDirectClientConf(endpoints []string, app, token string) RpcClientConf {
 
 func NewEtcdClientConf(hosts []string, key, app, token string) RpcClientConf {
 	return RpcClientConf{
-		Etcd: discov.EtcdConf{
+		Etcd: etcdv3.EtcdConf{
 			Hosts: hosts,
 			Key:   key,
 		},
@@ -49,7 +52,13 @@ func NewEtcdClientConf(hosts []string, key, app, token string) RpcClientConf {
 }
 
 func (sc RpcServerConf) HasEtcd() bool {
-	return len(sc.Etcd.Hosts) > 0 && len(sc.Etcd.Key) > 0
+	err := sc.Etcd.Validate()
+	return err == nil
+}
+
+func (sc RpcServerConf) HasConsul() bool {
+	err := sc.Consul.Validate()
+	return err == nil
 }
 
 func (sc RpcServerConf) Validate() error {
@@ -64,4 +73,14 @@ func (sc RpcServerConf) Validate() error {
 
 func (cc RpcClientConf) HasCredential() bool {
 	return len(cc.App) > 0 && len(cc.Token) > 0
+}
+
+func (cc RpcClientConf) HasEtcd() bool {
+	err := cc.Etcd.Validate()
+	return err == nil
+}
+
+func (cc RpcClientConf) HasConsul() bool {
+	err := cc.Consul.Validate()
+	return err == nil
 }

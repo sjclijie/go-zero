@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
 	"github.com/sjclijie/go-zero/core/contextx"
 	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/core/stringx"
+	"github.com/stretchr/testify/assert"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/mvcc/mvccpb"
 )

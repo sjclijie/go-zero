@@ -4,9 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"time"
 
-	"github.com/sjclijie/go-zero/core/discov"
 	"github.com/sjclijie/go-zero/example/rpc/remote/unary"
 	"github.com/sjclijie/go-zero/zrpc"
 )
@@ -17,7 +17,7 @@ func main() {
 	flag.Parse()
 
 	client := zrpc.MustNewClient(zrpc.RpcClientConf{
-		Etcd: discov.EtcdConf{
+		Etcd: etcdv3.EtcdConf{
 			Hosts: []string{"localhost:2379"},
 			Key:   "zrpc",
 		},

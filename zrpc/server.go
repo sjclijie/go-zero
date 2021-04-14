@@ -1,6 +1,8 @@
 package zrpc
 
 import (
+	"github.com/sjclijie/go-zero/core/discov/consul"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"log"
 	"os"
 	"strings"
@@ -44,12 +46,39 @@ func NewServer(c RpcServerConf, register internal.RegisterFn) (*RpcServer, error
 	var server internal.Server
 	metrics := stat.NewMetrics(c.ListenOn)
 	if c.HasEtcd() {
+		if err := c.Etcd.Validate(); err != nil {
+			return nil, err
+		}
+
 		listenOn := figureOutListenOn(c.ListenOn)
-		server, err = internal.NewRpcPubServer(c.Etcd.Hosts, c.Etcd.Key, listenOn, internal.WithMetrics(metrics))
+		publisher, err := etcdv3.NewPublisher(c.Etcd.Hosts, c.Etcd.Key, listenOn)
 		if err != nil {
 			return nil, err
 		}
+
+		server, err = internal.NewRpcPubServer(publisher, listenOn, internal.WithMetrics(metrics))
+		if err != nil {
+			return nil, err
+		}
+
+	} else if c.HasConsul() {
+		if err := c.Consul.Validate(); err != nil {
+			return nil, err
+		}
+
+		listenOn := figureOutListenOn(c.ListenOn)
+		publisher, err := consul.NewPublisher(c.Consul, listenOn)
+		if err != nil {
+			return nil, err
+		}
+
+		server, err = internal.NewRpcPubServer(publisher, listenOn, internal.WithMetrics(metrics))
+		if err != nil {
+			return nil, err
+		}
+
 	} else {
+
 		server = internal.NewRpcServer(c.ListenOn, internal.WithMetrics(metrics))
 	}
 
@@ -89,6 +118,10 @@ func (rs *RpcServer) Start() {
 }
 
 func (rs *RpcServer) Stop() {
+	if err := rs.server.Stop(); err != nil {
+		logx.Error(err)
+		panic(err)
+	}
 	logx.Close()
 }
 

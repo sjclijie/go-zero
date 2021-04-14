@@ -1,29 +1,29 @@
 package internal
 
-import "github.com/sjclijie/go-zero/core/discov"
+import (
+	"github.com/sjclijie/go-zero/core/discov"
+)
 
-func NewRpcPubServer(etcdEndpoints []string, etcdKey, listenOn string, opts ...ServerOption) (Server, error) {
-	registerEtcd := func() error {
-		pubClient := discov.NewPublisher(etcdEndpoints, etcdKey, listenOn)
-		return pubClient.KeepAlive()
-	}
-	server := keepAliveServer{
-		registerEtcd: registerEtcd,
-		Server:       NewRpcServer(listenOn, opts...),
-	}
-
-	return server, nil
-}
-
-type keepAliveServer struct {
-	registerEtcd func() error
+type rpcPubServer struct {
+	publisher discov.Publisher
 	Server
 }
 
-func (ags keepAliveServer) Start(fn RegisterFn) error {
-	if err := ags.registerEtcd(); err != nil {
+func NewRpcPubServer(publisher discov.Publisher, listenOn string, opts ...ServerOption) (Server, error) {
+	server := rpcPubServer{
+		publisher: publisher,
+		Server:    NewRpcServer(listenOn, opts...),
+	}
+	return server, nil
+}
+
+func (ags rpcPubServer) Start(fn RegisterFn) error {
+	if err := ags.publisher.Register(); err != nil {
 		return err
 	}
-
 	return ags.Server.Start(fn)
+}
+
+func (ags rpcPubServer) Stop() error {
+	return ags.publisher.Deregister()
 }

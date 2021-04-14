@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"strings"
 	"time"
 
-	"github.com/sjclijie/go-zero/core/discov"
 	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/core/proc"
 	"github.com/sjclijie/go-zero/core/syncx"
@@ -120,7 +120,7 @@ func serializeMap(m map[string]map[string]string, prefix string) string {
 }
 
 func main() {
-	registry := discov.NewFacade(endpoints)
+	registry := etcdv3.NewFacade(endpoints)
 	for _, key := range keys {
 		registry.Monitor(key, listener{key: key})
 	}

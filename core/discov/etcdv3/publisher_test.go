@@ -1,4 +1,4 @@
-package discov
+package etcdv3
 
 import (
 	"errors"
@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
-	"github.com/sjclijie/go-zero/core/discov/internal"
+	"github.com/sjclijie/go-zero/core/discov/etcdv3/internal"
 	"github.com/sjclijie/go-zero/core/logx"
+	"github.com/stretchr/testify/assert"
 	"go.etcd.io/etcd/clientv3"
 )
 

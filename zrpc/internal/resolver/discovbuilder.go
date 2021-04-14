@@ -1,9 +1,11 @@
 package resolver
 
+/*
 import (
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
+	"github.com/sjclijie/go-zero/core/utils"
 	"strings"
 
-	"github.com/sjclijie/go-zero/core/discov"
 	"google.golang.org/grpc/resolver"
 )
 
@@ -14,14 +16,14 @@ func (d *discovBuilder) Build(target resolver.Target, cc resolver.ClientConn, op
 	hosts := strings.FieldsFunc(target.Authority, func(r rune) bool {
 		return r == EndpointSepChar
 	})
-	sub, err := discov.NewSubscriber(hosts, target.Endpoint)
+	sub, err := etcdv3.NewSubscriber(hosts, target.Endpoint)
 	if err != nil {
 		return nil, err
 	}
 
 	update := func() {
 		var addrs []resolver.Address
-		for _, val := range subset(sub.Values(), subsetSize) {
+		for _, val := range utils.Subset(sub.Values(), subsetSize) {
 			addrs = append(addrs, resolver.Address{
 				Addr: val,
 			})
@@ -39,3 +41,4 @@ func (d *discovBuilder) Build(target resolver.Target, cc resolver.ClientConn, op
 func (d *discovBuilder) Scheme() string {
 	return DiscovScheme
 }
+*/

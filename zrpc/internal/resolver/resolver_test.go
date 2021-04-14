@@ -1,5 +1,6 @@
 package resolver
 
+/*
 import (
 	"testing"
 
@@ -34,3 +35,4 @@ func (m *mockedClientConn) NewServiceConfig(serviceConfig string) {
 func (m *mockedClientConn) ParseServiceConfig(serviceConfigJSON string) *serviceconfig.ParseResult {
 	return nil
 }
+*/

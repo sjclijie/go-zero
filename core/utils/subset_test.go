@@ -1,11 +1,11 @@
-package resolver
+package utils
 
 import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/sjclijie/go-zero/core/mathx"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSubset(t *testing.T) {
@@ -36,7 +36,7 @@ func TestSubset(t *testing.T) {
 
 			m := make(map[interface{}]int)
 			for i := 0; i < 1000; i++ {
-				set := subset(append([]string(nil), vals...), test.sub)
+				set := Subset(append([]string(nil), vals...), test.sub)
 				if test.sub < test.set {
 					assert.Equal(t, test.sub, len(set))
 				} else {

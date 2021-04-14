@@ -1,4 +1,4 @@
-package discov
+package etcdv3
 
 import (
 	"testing"

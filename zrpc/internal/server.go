@@ -14,6 +14,7 @@ type (
 		AddUnaryInterceptors(interceptors ...grpc.UnaryServerInterceptor)
 		SetName(string)
 		Start(register RegisterFn) error
+		Stop() error
 	}
 
 	baseRpcServer struct {

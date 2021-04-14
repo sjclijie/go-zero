@@ -1,10 +1,11 @@
 package zrpc
 
 import (
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
+	"github.com/sjclijie/go-zero/zrpc/internal/resolver"
 	"log"
 	"time"
 
-	"github.com/sjclijie/go-zero/core/discov"
 	"github.com/sjclijie/go-zero/zrpc/internal"
 	"github.com/sjclijie/go-zero/zrpc/internal/auth"
 	"google.golang.org/grpc"
@@ -52,10 +53,19 @@ func NewClient(c RpcClientConf, options ...ClientOption) (Client, error) {
 
 	var client Client
 	var err error
+
+	resolverTarget := resolver.ResolverTarget{
+		EtcdConf:   c.Etcd,
+		DirectConf: c.Endpoints,
+		ConsulConf: c.Consul,
+	}
+
 	if len(c.Endpoints) > 0 {
-		client, err = internal.NewClient(internal.BuildDirectTarget(c.Endpoints), opts...)
-	} else if err = c.Etcd.Validate(); err == nil {
-		client, err = internal.NewClient(internal.BuildDiscovTarget(c.Etcd.Hosts, c.Etcd.Key), opts...)
+		client, err = internal.NewClient(resolverTarget.Build(resolver.DirectScheme), opts...)
+	} else if c.HasEtcd() {
+		client, err = internal.NewClient(resolverTarget.Build(resolver.EtcdScheme), opts...)
+	} else if c.HasConsul() {
+		client, err = internal.NewClient(resolverTarget.Build(resolver.ConsulScheme), opts...)
 	}
 	if err != nil {
 		return nil, err
@@ -66,15 +76,22 @@ func NewClient(c RpcClientConf, options ...ClientOption) (Client, error) {
 	}, nil
 }
 
-func NewClientNoAuth(c discov.EtcdConf, opts ...ClientOption) (Client, error) {
-	client, err := internal.NewClient(internal.BuildDiscovTarget(c.Hosts, c.Key), opts...)
-	if err != nil {
-		return nil, err
-	}
+func NewClientNoAuth(c etcdv3.EtcdConf, opts ...ClientOption) (Client, error) {
 
-	return &RpcClient{
-		client: client,
-	}, nil
+	return nil, nil
+
+	/*
+		//client, err := internal.NewClient(internal.BuildDiscovTarget(c.Hosts, c.Key), opts...)
+		//client, err := internal.NewClient(  , opts...)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return &RpcClient{
+			client: client,
+		}, nil
+	*/
 }
 
 func NewClientWithTarget(target string, opts ...ClientOption) (Client, error) {

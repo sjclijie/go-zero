@@ -66,14 +66,20 @@ func (s *rpcServer) Start(register RegisterFn) error {
 		WithStreamServerInterceptors(streamInterceptors...))
 	server := grpc.NewServer(options...)
 	register(server)
+
 	// we need to make sure all others are wrapped up
 	// so we do graceful stop at shutdown phase instead of wrap up phase
 	waitForCalled := proc.AddWrapUpListener(func() {
 		server.GracefulStop()
 	})
+
 	defer waitForCalled()
 
 	return server.Serve(lis)
+}
+
+func (s *rpcServer) Stop() error {
+	return nil
 }
 
 func WithMetrics(metrics *stat.Metrics) ServerOption {

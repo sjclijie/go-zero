@@ -6,14 +6,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/sjclijie/go-zero/core/conf"
+	"github.com/sjclijie/go-zero/core/logx"
+	"github.com/sjclijie/go-zero/core/proc"
+	"github.com/sjclijie/go-zero/zrpc"
 
 	"bookstore/rpc/add/add"
 	"bookstore/rpc/add/internal/config"
 	"bookstore/rpc/add/internal/server"
 	"bookstore/rpc/add/internal/svc"
-
-	"github.com/sjclijie/go-zero/core/conf"
-	"github.com/sjclijie/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
@@ -31,6 +32,11 @@ func main() {
 		add.RegisterAdderServer(grpcServer, srv)
 	})
 	defer s.Stop()
+
+	waitForCalled := proc.AddShutdownListener(func() {
+		logx.Infof("%s is down...", c.Name)
+	})
+	defer waitForCalled()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

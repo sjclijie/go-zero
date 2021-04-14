@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/davecgh/go-spew/spew"
 
 	"bookstore/rpc/add/add"
 	"bookstore/rpc/add/internal/svc"
@@ -25,6 +26,6 @@ func NewAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddLogic {
 
 func (l *AddLogic) Add(in *add.AddReq) (*add.AddResp, error) {
 	// todo: add your logic here and delete this line
-
-	return &add.AddResp{}, nil
+	spew.Dump(in.GetBook(), in.GetPrice())
+	return &add.AddResp{Ok: true}, nil
 }

@@ -1,10 +1,10 @@
-package discov
+package etcdv3
 
 import (
 	"testing"
 
+	"github.com/sjclijie/go-zero/core/discov/etcdv3/internal"
 	"github.com/stretchr/testify/assert"
-	"github.com/sjclijie/go-zero/core/discov/internal"
 )
 
 const (

@@ -1,12 +1,12 @@
 package zrpc
 
 import (
+	"github.com/sjclijie/go-zero/core/discov/etcdv3"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/sjclijie/go-zero/core/discov"
 	"github.com/sjclijie/go-zero/core/service"
 	"github.com/sjclijie/go-zero/core/stores/redis"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRpcClientConf(t *testing.T) {
@@ -20,7 +20,7 @@ func TestRpcServerConf(t *testing.T) {
 	conf := RpcServerConf{
 		ServiceConf: service.ServiceConf{},
 		ListenOn:    "",
-		Etcd: discov.EtcdConf{
+		Etcd: etcdv3.EtcdConf{
 			Hosts: []string{"localhost:1234"},
 			Key:   "key",
 		},

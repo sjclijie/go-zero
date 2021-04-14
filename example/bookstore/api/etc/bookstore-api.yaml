@@ -1,3 +1,13 @@
 Name: bookstore-api
 Host: 0.0.0.0
 Port: 8888
+
+Add:
+  Consul:
+    Host: 127.0.0.1:8500
+    Key: add.rpc
+  #  Etcd:
+  #    Hosts: [ 127.0.0.1:23790 ]
+  #    Key: "add.rpc"
+  #  Endpoints: [ 192.168.1.1 ]
+  App: add.rpc
