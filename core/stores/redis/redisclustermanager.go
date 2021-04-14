@@ -1,10 +1,10 @@
 package redis
 
 import (
-	"io"
-
 	red "github.com/go-redis/redis"
 	"github.com/sjclijie/go-zero/core/syncx"
+	"io"
+	"strings"
 )
 
 var clusterManager = syncx.NewResourceManager()
@@ -12,13 +12,12 @@ var clusterManager = syncx.NewResourceManager()
 func getCluster(server, pass string) (*red.ClusterClient, error) {
 	val, err := clusterManager.GetResource(server, func() (io.Closer, error) {
 		store := red.NewClusterClient(&red.ClusterOptions{
-			Addrs:        []string{server},
+			Addrs:        strings.Split(server, ","),
 			Password:     pass,
 			MaxRetries:   maxRetries,
 			MinIdleConns: idleConns,
 		})
 		store.WrapProcess(process)
-
 		return store, nil
 	})
 	if err != nil {
