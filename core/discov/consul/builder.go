@@ -3,7 +3,6 @@ package consul
 import (
 	"fmt"
 	"google.golang.org/grpc/resolver"
-	"net"
 )
 
 type builder struct {
@@ -29,17 +28,11 @@ func (b *builder) SetConfig(c ConsulConf) {
 func (b *builder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (
 	resolver.Resolver, error) {
 
-	host, port, err := net.SplitHostPort(target.Authority)
-	if err != nil {
-		return nil, err
-	}
-
 	r := &Resolver{
-		host:  host,
-		port:  port,
-		token: b.config.Token,
-		name:  target.Endpoint,
-		cc:    cc,
+		authority: target.Authority,
+		token:     b.config.Token,
+		name:      target.Endpoint,
+		cc:        cc,
 	}
 
 	go r.Watcher()

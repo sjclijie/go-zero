@@ -8,9 +8,8 @@ import (
 
 //implements grpc.naming.Resolver
 type Resolver struct {
-	host  string
-	port  string
-	token string
+	authority string
+	token     string
 
 	cc resolver.ClientConn
 
@@ -23,7 +22,7 @@ func (r *Resolver) ResolveNow(opts resolver.ResolveNowOptions) {
 
 func (r *Resolver) Watcher() {
 	config := api.DefaultConfig()
-	config.Address = fmt.Sprintf("%s:%s", r.host, r.port)
+	config.Address = r.authority
 	config.Token = r.token
 	client, err := api.NewClient(config)
 
@@ -33,7 +32,6 @@ func (r *Resolver) Watcher() {
 	}
 
 	for {
-
 		services, metaInfo, err := client.Health().Service(r.name, "", true, &api.QueryOptions{
 			WaitIndex: r.lastIndex,
 		})
