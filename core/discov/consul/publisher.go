@@ -53,6 +53,8 @@ func NewPublisher(config ConsulConf, listenOn string, opts ...PublisherOption) (
 
 	c := api.DefaultConfig()
 	c.Address = config.Host
+	c.Token = config.Token
+
 	if client, err := api.NewClient(c); err != nil {
 		return nil, err
 	} else {

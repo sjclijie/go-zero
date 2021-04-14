@@ -11,6 +11,7 @@ type builder struct {
 	endpointSepChar int32
 	subsetSize      int
 	Endpoints       []string
+	config          ConsulConf
 }
 
 func NewBuilder(scheme string) *builder {
@@ -19,6 +20,10 @@ func NewBuilder(scheme string) *builder {
 		subsetSize:      32,
 		scheme:          scheme,
 	}
+}
+
+func (b *builder) SetConfig(c ConsulConf) {
+	b.config = c
 }
 
 func (b *builder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (
@@ -30,10 +35,11 @@ func (b *builder) Build(target resolver.Target, cc resolver.ClientConn, opts res
 	}
 
 	r := &Resolver{
-		host: host,
-		port: port,
-		name: target.Endpoint,
-		cc:   cc,
+		host:  host,
+		port:  port,
+		token: b.config.Token,
+		name:  target.Endpoint,
+		cc:    cc,
 	}
 
 	go r.Watcher()

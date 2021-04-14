@@ -5,7 +5,8 @@ import "errors"
 type ConsulConf struct {
 	Host        string
 	Key         string
-	HealthCheck bool `json:",default=true,optional"`
+	Token       string `json:",optional"`
+	HealthCheck bool   `json:",default=true,optional"`
 }
 
 func (c ConsulConf) Validate() error {

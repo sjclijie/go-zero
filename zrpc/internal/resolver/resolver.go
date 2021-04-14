@@ -38,6 +38,7 @@ func (r *ResolverTarget) Build(scheme string) (target string) {
 	case EtcdScheme:
 		target = r.buildEtcdTarget()
 	case ConsulScheme:
+		consulBuilder.SetConfig(r.ConsulConf)
 		target = r.buildConsulTarget()
 	}
 	return

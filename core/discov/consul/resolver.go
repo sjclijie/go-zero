@@ -8,9 +8,11 @@ import (
 
 //implements grpc.naming.Resolver
 type Resolver struct {
-	host string
-	port string
-	cc   resolver.ClientConn
+	host  string
+	port  string
+	token string
+
+	cc resolver.ClientConn
 
 	name      string
 	lastIndex uint64
@@ -22,7 +24,9 @@ func (r *Resolver) ResolveNow(opts resolver.ResolveNowOptions) {
 func (r *Resolver) Watcher() {
 	config := api.DefaultConfig()
 	config.Address = fmt.Sprintf("%s:%s", r.host, r.port)
+	config.Token = r.token
 	client, err := api.NewClient(config)
+
 	if err != nil {
 		fmt.Printf("error create consul client: %v\n", err)
 		return

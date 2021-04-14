@@ -2,7 +2,6 @@ package etcdv3
 
 import (
 	"context"
-	"github.com/davecgh/go-spew/spew"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/mvcc/mvccpb"
 	"google.golang.org/grpc/resolver"
@@ -39,9 +38,6 @@ func (r *Resolver) Watcher() {
 		})
 	}
 
-	spew.Dump(r.prefix)
-	spew.Dump(r.getAddress())
-
 	//watch
 	watchChan := r.client.Watch(context.Background(), r.prefix, clientv3.WithPrefix())
 	for response := range watchChan {
@@ -57,8 +53,6 @@ func (r *Resolver) Watcher() {
 		r.cc.UpdateState(resolver.State{
 			Addresses: r.getAddress(),
 		})
-
-		spew.Dump(r.getAddress())
 	}
 }
 
