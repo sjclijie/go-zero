@@ -97,6 +97,12 @@ func Error(w http.ResponseWriter, err error) {
 	WriteJson(w, http.StatusOK, newRet().wrapErrRet(err))
 }
 
+func ErrorJson(w http.ResponseWriter, err error, v interface{}) {
+	ret := newRet().wrapErrRet(err)
+	ret.Data = v
+	WriteJson(w, http.StatusOK, ret)
+}
+
 func Ok(w http.ResponseWriter) {
 	WriteJson(w, http.StatusOK, newRet())
 }
