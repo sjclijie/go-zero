@@ -370,7 +370,7 @@ func (s *Redis) Hdel(key, field string) (val bool, err error) {
 
 		cmd := conn.HDel(key, field)
 		v, err := cmd.Result()
-		s.log(cmd.String(), time.Since(start), err)
+		s.log(cmd.String(), timex.Since(start), err)
 		if err != nil {
 			return err
 		} else {
