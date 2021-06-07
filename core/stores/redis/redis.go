@@ -1716,7 +1716,7 @@ func (s *Redis) scriptLoad(script string) (string, error) {
 }
 
 func (s *Redis) log(cmd string, executeTime time.Duration, retError error) {
-	logx.Info("执行命令：%s, 耗时：%v, err: v", cmd, int64(executeTime/time.Millisecond), retError)
+	logx.Infof("执行命令：%s, 耗时：%v, err: v%", cmd, int64(executeTime/time.Millisecond), retError)
 }
 
 func acceptable(err error) bool {
