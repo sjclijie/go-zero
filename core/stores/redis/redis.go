@@ -3,7 +3,6 @@ package redis
 import (
 	"errors"
 	"fmt"
-	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/core/timex"
 	"strconv"
 	"time"
@@ -27,6 +26,8 @@ const (
 var ErrNilNode = errors.New("nil redis node")
 
 type (
+	logCallbackFn func(cmd red.Cmder, executeTime time.Duration, err error)
+
 	Pair struct {
 		Key   string
 		Score int64
@@ -34,10 +35,11 @@ type (
 
 	// thread-safe
 	Redis struct {
-		Addr string
-		Type string
-		Pass string
-		brk  breaker.Breaker
+		Addr        string
+		Type        string
+		Pass        string
+		brk         breaker.Breaker
+		logCallback []logCallbackFn
 	}
 
 	RedisNode interface {
@@ -72,6 +74,10 @@ func NewRedis(redisAddr, redisType string, redisPass ...string) *Redis {
 		Pass: pass,
 		brk:  breaker.NewBreaker(),
 	}
+}
+
+func (s *Redis) SetLogCallback(fn logCallbackFn) {
+	s.logCallback = append(s.logCallback, fn)
 }
 
 // Use passed in redis connection to execute blocking queries
@@ -709,11 +715,11 @@ func (s *Redis) Lrange(key string, start int, stop int) (val []string, err error
 			return err
 		}
 
-		start := timex.Now()
+		startTime := timex.Now()
 
 		cmd := conn.LRange(key, int64(start), int64(stop))
 		val, err = cmd.Result()
-		s.log(cmd, timex.Since(start), err)
+		s.log(cmd, timex.Since(startTime), err)
 		return err
 	}, acceptable)
 
@@ -1714,7 +1720,9 @@ func (s *Redis) scriptLoad(script string) (string, error) {
 }
 
 func (s *Redis) log(cmd red.Cmder, executeTime time.Duration, retError error) {
-	logx.Infof("执行命令：%s , Arg: %s, 耗时：%v, err: v%", cmd.Name(), cmd.Args(), int64(executeTime/time.Millisecond), retError)
+	for _, fn := range s.logCallback {
+		fn(cmd, executeTime, retError)
+	}
 }
 
 func acceptable(err error) bool {
