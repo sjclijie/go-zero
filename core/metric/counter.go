@@ -15,7 +15,8 @@ type (
 	}
 
 	promCounterVec struct {
-		counter *prom.CounterVec
+		counter            *prom.CounterVec
+		defaultLabelValues []string
 	}
 )
 
@@ -24,6 +25,8 @@ func NewCounterVec(cfg *CounterVecOpts) CounterVec {
 		return nil
 	}
 
+	cfg.Labels = append(cfg.Labels, CommonLabel...)
+
 	vec := prom.NewCounterVec(prom.CounterOpts{
 		Namespace: cfg.Namespace,
 		Subsystem: cfg.Subsystem,
@@ -31,9 +34,20 @@ func NewCounterVec(cfg *CounterVecOpts) CounterVec {
 		Help:      cfg.Help,
 	}, cfg.Labels)
 	prom.MustRegister(vec)
+
+	defaultLabelValues := make([]string, len(CommonLabel))
+	defaultLabelValues = append(defaultLabelValues, prom.BuildFQName(cfg.Namespace, cfg.Subsystem, cfg.Name))
+	defaultLabelValues = append(defaultLabelValues, "counter")
+	defaultLabelValues = append(defaultLabelValues, cfg.AppId)
+	defaultLabelValues = append(defaultLabelValues, cfg.Env)
+	defaultLabelValues = append(defaultLabelValues, cfg.Ip)
+	defaultLabelValues = append(defaultLabelValues, cfg.DataType)
+
 	cv := &promCounterVec{
-		counter: vec,
+		counter:            vec,
+		defaultLabelValues: defaultLabelValues,
 	}
+
 	proc.AddShutdownListener(func() {
 		cv.close()
 	})
@@ -42,11 +56,13 @@ func NewCounterVec(cfg *CounterVecOpts) CounterVec {
 }
 
 func (cv *promCounterVec) Inc(labels ...string) {
+	labels = append(labels, cv.defaultLabelValues...)
 	cv.counter.WithLabelValues(labels...).Inc()
 }
 
-func (cv *promCounterVec) Add(v float64, lables ...string) {
-	cv.counter.WithLabelValues(lables...).Add(v)
+func (cv *promCounterVec) Add(v float64, labels ...string) {
+	labels = append(labels, cv.defaultLabelValues...)
+	cv.counter.WithLabelValues(labels...).Add(v)
 }
 
 func (cv *promCounterVec) close() bool {

@@ -16,7 +16,8 @@ type (
 	}
 
 	promGuageVec struct {
-		gauge *prom.GaugeVec
+		gauge              *prom.GaugeVec
+		defaultLabelValues []string
 	}
 )
 
@@ -24,6 +25,8 @@ func NewGaugeVec(cfg *GaugeVecOpts) GuageVec {
 	if cfg == nil {
 		return nil
 	}
+
+	cfg.Labels = append(cfg.Labels, CommonLabel...)
 
 	vec := prom.NewGaugeVec(
 		prom.GaugeOpts{
@@ -33,8 +36,18 @@ func NewGaugeVec(cfg *GaugeVecOpts) GuageVec {
 			Help:      cfg.Help,
 		}, cfg.Labels)
 	prom.MustRegister(vec)
+
+	defaultLabelValues := make([]string, len(CommonLabel))
+	defaultLabelValues = append(defaultLabelValues, prom.BuildFQName(cfg.Namespace, cfg.Subsystem, cfg.Name))
+	defaultLabelValues = append(defaultLabelValues, "gauge")
+	defaultLabelValues = append(defaultLabelValues, cfg.AppId)
+	defaultLabelValues = append(defaultLabelValues, cfg.Env)
+	defaultLabelValues = append(defaultLabelValues, cfg.Ip)
+	defaultLabelValues = append(defaultLabelValues, cfg.DataType)
+
 	gv := &promGuageVec{
-		gauge: vec,
+		gauge:              vec,
+		defaultLabelValues: defaultLabelValues,
 	}
 	proc.AddShutdownListener(func() {
 		gv.close()
@@ -44,15 +57,18 @@ func NewGaugeVec(cfg *GaugeVecOpts) GuageVec {
 }
 
 func (gv *promGuageVec) Inc(labels ...string) {
+	labels = append(labels, gv.defaultLabelValues...)
 	gv.gauge.WithLabelValues(labels...).Inc()
 }
 
-func (gv *promGuageVec) Add(v float64, lables ...string) {
-	gv.gauge.WithLabelValues(lables...).Add(v)
+func (gv *promGuageVec) Add(v float64, labels ...string) {
+	labels = append(labels, gv.defaultLabelValues...)
+	gv.gauge.WithLabelValues(labels...).Add(v)
 }
 
-func (gv *promGuageVec) Set(v float64, lables ...string) {
-	gv.gauge.WithLabelValues(lables...).Set(v)
+func (gv *promGuageVec) Set(v float64, labels ...string) {
+	labels = append(labels, gv.defaultLabelValues...)
+	gv.gauge.WithLabelValues(labels...).Set(v)
 }
 
 func (gv *promGuageVec) close() bool {

@@ -13,15 +13,20 @@ type (
 		Help      string
 		Labels    []string
 		Buckets   []float64
+		AppId     string
+		Env       string
+		Ip        string
+		DataType  string
 	}
 
 	HistogramVec interface {
-		Observe(v int64, lables ...string)
+		Observe(v int64, labels ...string)
 		close() bool
 	}
 
 	promHistogramVec struct {
-		histogram *prom.HistogramVec
+		histogram          *prom.HistogramVec
+		defaultLabelValues []string
 	}
 )
 
@@ -29,6 +34,8 @@ func NewHistogramVec(cfg *HistogramVecOpts) HistogramVec {
 	if cfg == nil {
 		return nil
 	}
+
+	cfg.Labels = append(cfg.Labels, CommonLabel...)
 
 	vec := prom.NewHistogramVec(prom.HistogramOpts{
 		Namespace: cfg.Namespace,
@@ -38,8 +45,18 @@ func NewHistogramVec(cfg *HistogramVecOpts) HistogramVec {
 		Buckets:   cfg.Buckets,
 	}, cfg.Labels)
 	prom.MustRegister(vec)
+
+	defaultLabelValues := make([]string, len(CommonLabel))
+	defaultLabelValues = append(defaultLabelValues, prom.BuildFQName(cfg.Namespace, cfg.Subsystem, cfg.Name))
+	defaultLabelValues = append(defaultLabelValues, "histogram")
+	defaultLabelValues = append(defaultLabelValues, cfg.AppId)
+	defaultLabelValues = append(defaultLabelValues, cfg.Env)
+	defaultLabelValues = append(defaultLabelValues, cfg.Ip)
+	defaultLabelValues = append(defaultLabelValues, cfg.DataType)
+
 	hv := &promHistogramVec{
-		histogram: vec,
+		histogram:          vec,
+		defaultLabelValues: defaultLabelValues,
 	}
 	proc.AddShutdownListener(func() {
 		hv.close()
@@ -49,6 +66,7 @@ func NewHistogramVec(cfg *HistogramVecOpts) HistogramVec {
 }
 
 func (hv *promHistogramVec) Observe(v int64, labels ...string) {
+	labels = append(labels, hv.defaultLabelValues...)
 	hv.histogram.WithLabelValues(labels...).Observe(float64(v))
 }
 
