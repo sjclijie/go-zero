@@ -35,7 +35,7 @@ func NewCounterVec(cfg *CounterVecOpts) CounterVec {
 	}, cfg.Labels)
 	prom.MustRegister(vec)
 
-	defaultLabelValues := make([]string, len(CommonLabel))
+	defaultLabelValues := make([]string, 0)
 	defaultLabelValues = append(defaultLabelValues, prom.BuildFQName(cfg.Namespace, cfg.Subsystem, cfg.Name))
 	defaultLabelValues = append(defaultLabelValues, "counter")
 	defaultLabelValues = append(defaultLabelValues, cfg.AppId)

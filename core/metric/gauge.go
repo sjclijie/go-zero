@@ -37,7 +37,7 @@ func NewGaugeVec(cfg *GaugeVecOpts) GuageVec {
 		}, cfg.Labels)
 	prom.MustRegister(vec)
 
-	defaultLabelValues := make([]string, len(CommonLabel))
+	defaultLabelValues := make([]string, 0)
 	defaultLabelValues = append(defaultLabelValues, prom.BuildFQName(cfg.Namespace, cfg.Subsystem, cfg.Name))
 	defaultLabelValues = append(defaultLabelValues, "gauge")
 	defaultLabelValues = append(defaultLabelValues, cfg.AppId)
