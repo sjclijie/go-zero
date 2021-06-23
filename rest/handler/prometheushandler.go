@@ -37,7 +37,7 @@ func PromethousHandler(path string) func(http.Handler) http.Handler {
 			startTime := timex.Now()
 			cw := &security.WithCodeResponseWriter{Writer: w}
 			defer func() {
-				metricServerReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), path)
+				metricServerReqDur.Observe(float64(timex.Since(startTime)/time.Millisecond), path)
 				metricServerReqCodeTotal.Inc(path, strconv.Itoa(cw.Code))
 			}()
 

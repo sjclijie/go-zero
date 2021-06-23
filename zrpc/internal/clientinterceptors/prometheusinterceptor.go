@@ -36,7 +36,7 @@ func PrometheusInterceptor(ctx context.Context, method string, req, reply interf
 	cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	startTime := timex.Now()
 	err := invoker(ctx, method, req, reply, cc, opts...)
-	metricClientReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), method)
+	metricClientReqDur.Observe(float64(timex.Since(startTime)/time.Millisecond), method)
 	metricClientReqCodeTotal.Inc(method, strconv.Itoa(int(status.Code(err))))
 	return err
 }

@@ -37,7 +37,7 @@ func UnaryPrometheusInterceptor() grpc.UnaryServerInterceptor {
 		interface{}, error) {
 		startTime := timex.Now()
 		resp, err := handler(ctx, req)
-		metricServerReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), info.FullMethod)
+		metricServerReqDur.Observe(float64(timex.Since(startTime)/time.Millisecond), info.FullMethod)
 		metricServerReqCodeTotal.Inc(info.FullMethod, strconv.Itoa(int(status.Code(err))))
 		return resp, err
 	}
