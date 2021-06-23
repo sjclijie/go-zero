@@ -20,7 +20,7 @@ type (
 	}
 
 	HistogramVec interface {
-		Observe(v int64, labels ...string)
+		Observe(v float64, labels ...string)
 		close() bool
 	}
 
@@ -65,9 +65,9 @@ func NewHistogramVec(cfg *HistogramVecOpts) HistogramVec {
 	return hv
 }
 
-func (hv *promHistogramVec) Observe(v int64, labels ...string) {
+func (hv *promHistogramVec) Observe(v float64, labels ...string) {
 	labels = append(labels, hv.defaultLabelValues...)
-	hv.histogram.WithLabelValues(labels...).Observe(float64(v))
+	hv.histogram.WithLabelValues(labels...).Observe(v)
 }
 
 func (hv *promHistogramVec) close() bool {
