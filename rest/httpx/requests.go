@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -55,7 +56,20 @@ func ParseForm(r *http.Request, v interface{}) error {
 			params[name] = formValue
 		}
 	}
-
+	if r.MultipartForm != nil {
+		for key, fileHeaders := range r.MultipartForm.File {
+			file := []byte{}
+			for i := 0; i < len(fileHeaders); i++ {
+				if fileHeaders[i] == nil {
+					continue
+				}
+				f, _ := fileHeaders[i].Open()
+				buf, _ := ioutil.ReadAll(f)
+				file = append(file, buf...)
+			}
+			params[key] = file
+		}
+	}
 	return formUnmarshaler.Unmarshal(params, v)
 }
 
