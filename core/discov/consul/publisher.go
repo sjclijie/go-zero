@@ -76,10 +76,11 @@ func (p *Publisher) Register() error {
 
 	if p.config.HealthCheck {
 		registration.Check = &api.AgentServiceCheck{
-			Interval:                       time.Duration(5 * time.Second).String(),
-			Timeout:                        time.Duration(5 * time.Second).String(),
-			GRPC:                           fmt.Sprintf("%v/%v", p.config.Host, p.config.Key),
-			DeregisterCriticalServiceAfter: time.Duration(30 * time.Second).String(),
+			CheckID:                        p.serviceId,
+			Interval:                       (5 * time.Second).String(),
+			Timeout:                        (5 * time.Second).String(),
+			GRPC:                           fmt.Sprintf("%v:%v/%v", p.listenHost, p.listenPort, p.config.Key),
+			DeregisterCriticalServiceAfter: (30 * time.Second).String(),
 		}
 	}
 
