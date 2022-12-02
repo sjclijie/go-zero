@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"google.golang.org/grpc/resolver"
+	"time"
 )
 
 //implements grpc.naming.Resolver
@@ -37,6 +38,7 @@ func (r *Resolver) Watcher() {
 		})
 		if err != nil {
 			fmt.Printf("error retrieving instances from consul: %v\n", err)
+			time.Sleep(200 * time.Millisecond)
 			continue
 		}
 
