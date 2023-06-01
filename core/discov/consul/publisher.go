@@ -100,17 +100,13 @@ func (p *Publisher) Register() error {
 
 	go func() {
 		ticker := time.NewTicker(time.Second * 10)
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-		defer func() {
-			ticker.Stop()
-			cancel()
-		}()
+		defer ticker.Stop()
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
 
 		for {
 			select {
-			case <-ctx.Done():
-				//超时 -- 重新注册
-				fmt.Println("超时 -- 重新注册")
 			case <-ticker.C:
 				resp, err := healthClient.Check(ctx, &grpc_health_v1.HealthCheckRequest{
 					Service: p.serviceId,
