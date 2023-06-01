@@ -91,7 +91,7 @@ func (p *Publisher) Register() error {
 		return err
 	}
 
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", p.listenHost, p.listenPort), grpc.WithInsecure())
+	conn, err := grpc.Dial(p.config.Host, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func (p *Publisher) Register() error {
 					Service: p.serviceId,
 				})
 				if err != nil || resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
-					fmt.Printf("Service instance is not serving: %v", err)
+					fmt.Printf("Service instance is not serving: %v\n", err)
 				} else {
 					fmt.Println("Service instance is serving")
 				}
