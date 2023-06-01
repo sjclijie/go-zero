@@ -91,7 +91,8 @@ func (p *Publisher) Register() error {
 		return err
 	}
 
-	conn, err := grpc.Dial(fmt.Sprintf("%s/%s", p.config.Host, p.config.Key), grpc.WithInsecure())
+	target := fmt.Sprintf("%s://%s/%s", "consul", p.config.Host, p.config.Key)
+	conn, err := grpc.Dial(target, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
