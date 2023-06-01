@@ -110,7 +110,7 @@ func (p *Publisher) Register() error {
 			select {
 			case <-ctx.Done():
 				//超时 -- 重新注册
-				return
+				fmt.Printf("超时 -- 重新注册")
 			case <-ticker.C:
 				resp, err := healthClient.Check(ctx, &grpc_health_v1.HealthCheckRequest{
 					Service: p.serviceId,
