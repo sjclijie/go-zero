@@ -1,11 +1,14 @@
 package consul
 
 import (
+	"context"
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"github.com/sjclijie/go-zero/core/lang"
 	"github.com/sjclijie/go-zero/core/proc"
 	"github.com/sjclijie/go-zero/core/syncx"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"net"
 	"strconv"
 	"time"
@@ -87,6 +90,39 @@ func (p *Publisher) Register() error {
 	if err := p.client.Agent().ServiceRegister(registration); err != nil {
 		return err
 	}
+
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", p.listenHost, p.listenPort))
+	if err != nil {
+		return err
+	}
+
+	healthClient := grpc_health_v1.NewHealthClient(conn)
+
+	go func() {
+		ticker := time.NewTicker(time.Second * 10)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer func() {
+			ticker.Stop()
+			cancel()
+		}()
+
+		for {
+			select {
+			case <-ctx.Done():
+				//超时 -- 重新注册
+				return
+			case <-ticker.C:
+				resp, err := healthClient.Check(ctx, &grpc_health_v1.HealthCheckRequest{
+					Service: p.serviceId,
+				})
+				if err != nil || resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
+					fmt.Printf("Service instance is not serving: %v", err)
+				} else {
+					fmt.Println("Service instance is serving")
+				}
+			}
+		}
+	}()
 
 	proc.AddWrapUpListener(func() {
 		p.Deregister()
