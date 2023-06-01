@@ -100,7 +100,7 @@ func (p *Publisher) Register() error {
 
 	go func() {
 		ticker := time.NewTicker(time.Second * 10)
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer func() {
 			ticker.Stop()
 			cancel()
@@ -110,7 +110,7 @@ func (p *Publisher) Register() error {
 			select {
 			case <-ctx.Done():
 				//超时 -- 重新注册
-				fmt.Printf("超时 -- 重新注册")
+				fmt.Println("超时 -- 重新注册")
 			case <-ticker.C:
 				resp, err := healthClient.Check(ctx, &grpc_health_v1.HealthCheckRequest{
 					Service: p.serviceId,
