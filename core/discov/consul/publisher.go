@@ -124,10 +124,15 @@ func (p *Publisher) Register() error {
 		for {
 			select {
 			case <-ticker.C:
-				err = p.client.Agent().UpdateTTL(p.serviceId, "", "passing")
-				logx.Info("update ttl")
-				if err != nil {
+				if err = p.client.Agent().UpdateTTL(p.serviceId, "", "passing"); err != nil {
 					logx.Infof("update ttl of service error: %v", err.Error())
+					if err := p.client.Agent().ServiceRegister(registration); err != nil {
+						logx.Errorf("registration the service failed, service: %s,  error: %s", p.serviceId, err.Error())
+					} else {
+						logx.Errorf("registration the service successful, service: %s", p.serviceId)
+					}
+				} else {
+					logx.Info("update ttl")
 				}
 				/*
 					resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
