@@ -75,80 +75,53 @@ func (p *Publisher) Register() error {
 		Port:    p.listenPort,
 	}
 
-	if p.config.HealthCheck {
-		registration.Check = &api.AgentServiceCheck{
-			CheckID:                        p.serviceId,
-			Interval:                       (5 * time.Second).String(),
-			Timeout:                        (5 * time.Second).String(),
-			GRPC:                           fmt.Sprintf("%v:%v/%v", p.listenHost, p.listenPort, p.config.Key),
-			DeregisterCriticalServiceAfter: (30 * time.Second).String(),
-		}
-	}
-
 	ttl := fmt.Sprintf("%ds", 20)
-	expireTTL := fmt.Sprintf("%ds", 60)
+	expiredTTL := fmt.Sprintf("%ds", 50)
 
 	registration.Checks = []*api.AgentServiceCheck{
 		{
 			CheckID:                        p.serviceId,
 			TTL:                            ttl,
 			Status:                         "passing",
-			DeregisterCriticalServiceAfter: expireTTL,
+			DeregisterCriticalServiceAfter: expiredTTL,
 		},
 	}
 
 	if err := p.client.Agent().ServiceRegister(registration); err != nil {
-		return err
+		return fmt.Errorf("[consul] service registration failed, %s", err.Error())
+	} else {
+		logx.Infof("[consul] service registration successful, %s", p.serviceId)
 	}
 
-	check := api.AgentServiceCheck{TTL: ttl, Status: "passing", DeregisterCriticalServiceAfter: expireTTL}
+	check := api.AgentServiceCheck{TTL: ttl, Status: "passing", DeregisterCriticalServiceAfter: expiredTTL}
 	err := p.client.Agent().CheckRegister(&api.AgentCheckRegistration{ID: p.serviceId, Name: p.config.Key, ServiceID: p.serviceId, AgentServiceCheck: check})
 	if err != nil {
-		return fmt.Errorf("initial register service check to consul error: %s", err.Error())
+		return fmt.Errorf("[consul] initial register service check to consul error: %s", err.Error())
 	}
 
-	/*
-		target := fmt.Sprintf("%s://%s/%s", "consul", p.config.Host, p.config.Key)
-		conn, err := grpc.Dial(target, grpc.WithInsecure())
-		if err != nil {
-			return err
-		}
-
-		healthClient := grpc_health_v1.NewHealthClient(conn)
-	*/
+	ticker := time.NewTicker(time.Second * 10)
 
 	go func() {
-		ticker := time.NewTicker(time.Second * 10)
-		defer ticker.Stop()
-
 		for {
 			select {
 			case <-ticker.C:
 				if err = p.client.Agent().UpdateTTL(p.serviceId, "", "passing"); err != nil {
-					logx.Infof("update ttl of service error: %v", err.Error())
+					logx.Errorf("[consul] update ttl of service error: %v", err.Error())
+
 					if err := p.client.Agent().ServiceRegister(registration); err != nil {
-						logx.Errorf("registration the service failed, service: %s,  error: %s", p.serviceId, err.Error())
+						logx.Errorf("[consul] registration the service failed, service: %s,  error: %s", p.serviceId, err.Error())
 					} else {
-						logx.Errorf("registration the service successful, service: %s", p.serviceId)
+						logx.Infof("[consul] registration the service successful, service: %s", p.serviceId)
 					}
 				} else {
-					logx.Info("update ttl")
+					logx.Info("[consul] update ttl successful")
 				}
-				/*
-					resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
-						Service: p.serviceId,
-					})
-					if err != nil || resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
-						fmt.Printf("Service instance is not serving: %v\n", err)
-					} else {
-						fmt.Println("Service instance is serving")
-					}
-				*/
 			}
 		}
 	}()
 
 	proc.AddWrapUpListener(func() {
+		ticker.Stop()
 		p.Deregister()
 	})
 
