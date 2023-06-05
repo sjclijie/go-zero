@@ -1,14 +1,12 @@
 package consul
 
 import (
-	"context"
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"github.com/sjclijie/go-zero/core/lang"
+	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/core/proc"
 	"github.com/sjclijie/go-zero/core/syncx"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/health/grpc_health_v1"
 	"net"
 	"strconv"
 	"time"
@@ -87,26 +85,37 @@ func (p *Publisher) Register() error {
 		}
 	}
 
+	ttl := fmt.Sprintf("%ds", 20)
+	expireTTL := fmt.Sprintf("%ds", 60)
+
+	registration.Checks = []*api.AgentServiceCheck{
+		{
+			CheckID:                        p.serviceId,
+			TTL:                            ttl,
+			Status:                         "passing",
+			DeregisterCriticalServiceAfter: expireTTL,
+		},
+	}
+
 	if err := p.client.Agent().ServiceRegister(registration); err != nil {
 		return err
 	}
 
-	target := fmt.Sprintf("%s://%s/%s", "consul", p.config.Host, p.config.Key)
-
-	conn, err := grpc.Dial(target, grpc.WithInsecure())
+	check := api.AgentServiceCheck{TTL: ttl, Status: "passing", DeregisterCriticalServiceAfter: expireTTL}
+	err := p.client.Agent().CheckRegister(&api.AgentCheckRegistration{ID: p.serviceId, Name: p.config.Key, ServiceID: p.serviceId, AgentServiceCheck: check})
 	if err != nil {
-		return err
+		return fmt.Errorf("initial register service check to consul error: %s", err.Error())
 	}
 
-	healthClient := grpc_health_v1.NewHealthClient(conn)
+	/*
+		target := fmt.Sprintf("%s://%s/%s", "consul", p.config.Host, p.config.Key)
+		conn, err := grpc.Dial(target, grpc.WithInsecure())
+		if err != nil {
+			return err
+		}
 
-	if resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
-		Service: p.serviceId,
-	}); err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(resp)
-	}
+		healthClient := grpc_health_v1.NewHealthClient(conn)
+	*/
 
 	go func() {
 		ticker := time.NewTicker(time.Second * 10)
@@ -115,14 +124,21 @@ func (p *Publisher) Register() error {
 		for {
 			select {
 			case <-ticker.C:
-				resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
-					Service: p.serviceId,
-				})
-				if err != nil || resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
-					fmt.Printf("Service instance is not serving: %v\n", err)
-				} else {
-					fmt.Println("Service instance is serving")
+				err = p.client.Agent().UpdateTTL(p.serviceId, "", "passing")
+				logx.Info("update ttl")
+				if err != nil {
+					logx.Infof("update ttl of service error: %v", err.Error())
 				}
+				/*
+					resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
+						Service: p.serviceId,
+					})
+					if err != nil || resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
+						fmt.Printf("Service instance is not serving: %v\n", err)
+					} else {
+						fmt.Println("Service instance is serving")
+					}
+				*/
 			}
 		}
 	}()
