@@ -92,6 +92,7 @@ func (p *Publisher) Register() error {
 	}
 
 	target := fmt.Sprintf("%s://%s/%s", "consul", p.config.Host, p.config.Key)
+
 	conn, err := grpc.Dial(target, grpc.WithInsecure())
 	if err != nil {
 		return err
@@ -99,17 +100,22 @@ func (p *Publisher) Register() error {
 
 	healthClient := grpc_health_v1.NewHealthClient(conn)
 
+	if resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
+		Service: p.serviceId,
+	}); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(resp)
+	}
+
 	go func() {
 		ticker := time.NewTicker(time.Second * 10)
 		defer ticker.Stop()
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-		defer cancel()
-
 		for {
 			select {
 			case <-ticker.C:
-				resp, err := healthClient.Check(ctx, &grpc_health_v1.HealthCheckRequest{
+				resp, err := healthClient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{
 					Service: p.serviceId,
 				})
 				if err != nil || resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
