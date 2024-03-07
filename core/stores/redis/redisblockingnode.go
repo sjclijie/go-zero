@@ -3,15 +3,17 @@ package redis
 import (
 	"fmt"
 
-	red "github.com/go-redis/redis"
+	red "github.com/redis/go-redis/v9"
 	"github.com/sjclijie/go-zero/core/logx"
 )
 
+// ClosableNode interface represents a closable redis node.
 type ClosableNode interface {
 	RedisNode
 	Close()
 }
 
+// CreateBlockingNode returns a ClosableNode.
 func CreateBlockingNode(r *Redis) (ClosableNode, error) {
 	timeout := readWriteTimeout + blockingQueryTimeout
 
@@ -29,7 +31,7 @@ func CreateBlockingNode(r *Redis) (ClosableNode, error) {
 		return &clientBridge{client}, nil
 	case ClusterType:
 		client := red.NewClusterClient(&red.ClusterOptions{
-			Addrs:        []string{r.Addr},
+			Addrs:        splitClusterAddrs(r.Addr),
 			Password:     r.Pass,
 			MaxRetries:   maxRetries,
 			PoolSize:     1,

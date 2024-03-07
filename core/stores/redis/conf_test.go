@@ -3,8 +3,8 @@ package redis
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/sjclijie/go-zero/core/stringx"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRedisConf(t *testing.T) {
@@ -37,6 +37,16 @@ func TestRedisConf(t *testing.T) {
 				Host: "localhost:6379",
 				Type: NodeType,
 				Pass: "",
+			},
+			ok: true,
+		},
+		{
+			name: "ok",
+			RedisConf: RedisConf{
+				Host: "localhost:6379",
+				Type: ClusterType,
+				Pass: "pwd",
+				Tls:  true,
 			},
 			ok: true,
 		},
