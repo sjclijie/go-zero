@@ -49,11 +49,11 @@ func (lc *LogCollector) takeAll() []string {
 }
 
 func Error(r *http.Request, v ...interface{}) {
-	logx.ErrorCaller(1, format(r, v...))
+	logx.Error(format(r, v...))
 }
 
 func Errorf(r *http.Request, format string, v ...interface{}) {
-	logx.ErrorCaller(1, formatf(r, format, v...))
+	logx.Error(formatf(r, format, v...))
 }
 
 func Info(r *http.Request, v ...interface{}) {
