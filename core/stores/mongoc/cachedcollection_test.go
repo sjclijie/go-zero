@@ -13,12 +13,12 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/stretchr/testify/assert"
 	"github.com/sjclijie/go-zero/core/stat"
 	"github.com/sjclijie/go-zero/core/stores/cache"
 	"github.com/sjclijie/go-zero/core/stores/mongo"
 	"github.com/sjclijie/go-zero/core/stores/redis"
 	"github.com/sjclijie/go-zero/core/stores/redis/redistest"
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {

@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/alicebob/miniredis/v2"
-	"github.com/stretchr/testify/assert"
 	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/core/stores/redis"
 	"github.com/sjclijie/go-zero/core/stores/redis/redistest"
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {

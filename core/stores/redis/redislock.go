@@ -7,7 +7,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	red "github.com/redis/go-redis/v9"
+	red "github.com/go-redis/redis/v8"
+
 	"github.com/sjclijie/go-zero/core/logx"
 	"github.com/sjclijie/go-zero/core/stringx"
 )
@@ -41,7 +42,7 @@ type RedisLock struct {
 }
 
 func init() {
-	rand.NewSource(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 }
 
 // NewRedisLock returns a RedisLock.
